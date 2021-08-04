@@ -1,13 +1,11 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <m-header></m-header>
+  <router-view></router-view>
 </template>
 
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import MHeader from './views/header/header.vue'
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
 </script>
 
 <style>
@@ -16,7 +14,27 @@ import HelloWorld from './components/HelloWorld.vue'
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+html {
+  font-size: calc(100vw / 3.75);
+}
+body {
+  margin: 0;
+  font-size: .14rem;
+}
+a {
+  text-decoration: none;
+}
+.bg-1 {
+  background-color: #fafafa;
+}
+.txt-1 {
+  color: rgba(26,26,26,.5);
+}
+.txt-2 {
+  color: rgba(26,26,26,1);
+}
+.txt-3 {
+  color: rgba(175,215,237,1);
 }
 </style>
