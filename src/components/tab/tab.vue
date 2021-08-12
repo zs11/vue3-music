@@ -1,12 +1,12 @@
 <template>
-  <nav class="music-tab txt-1">
+  <nav class="music-tab flex-box">
     <router-link
       class="music-tab-item"
       v-for="tab in tabs"
       :key="tab.path"
       :to="tab.path"
     >
-      <span class="music-tab-text">{{tab.name}}</span>
+      <span class="music-tab-text txt-1">{{tab.name}}</span>
     </router-link>
   </nav>
 </template>
@@ -24,10 +24,10 @@ const props = defineProps({
 
 <style scoped>
 .music-tab {
-  display: flex;
   height: .4rem;
   line-height: .4rem;
   text-align: center;
+  font-size: .14rem;
 }
 .music-tab-item {
   flex: 1;
@@ -47,5 +47,8 @@ const props = defineProps({
   border-radius: .03rem;
   background: currentColor;
   transform: translate3d(-50%, 0, 0);
+}
+.txt-3 .music-tab-text {
+  color: rgba(44,162,249,1);
 }
 </style>

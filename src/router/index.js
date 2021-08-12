@@ -5,6 +5,10 @@ import TopList from '../views/topList/topList.vue'
 
 const routes = [
   {
+    path: '/',
+    redirect: '/recommend'
+  },
+  {
     path: '/recommend',
     component: Recommend
   },
