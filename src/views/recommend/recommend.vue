@@ -1,22 +1,50 @@
 <template>
   <section class="tab-cont">
     <search @search-tab-click="handleSearchBarClick"></search>
-    <section class="recommend-row" :style="{ display: contShow }">
-      <section class="recommend-title flex-box">
-        <h2 class="tit-txt txt-2">hi今日为你打造</h2>
-        <a class="tit-more txt-2" href="javascript:;">更多</a>
+    <section class="recomment-cont" :style="{ display: contShow }">
+      <section class="recommend-row">
+        <div class="recommend-slide">
+          <slide :slideConfig="slideConfig"></slide>
+        </div>
       </section>
-      <section class="scroll-wrap">
-        <section class="card-scroll">
-          <div class="card-list">
-            <radio-card></radio-card>
-            <card :card-data="cardData1"></card>
-            <card :card-data="cardData2"></card>
-            <card :card-data="cardData3"></card>
-            <card :card-data="cardData4"></card>
-            <card :card-data="cardData5"></card>
-            <card :card-data="cardData6"></card>
-          </div>
+      <section class="recommend-row">
+        <section class="recommend-title flex-box">
+          <h2 class="tit-txt txt-2">hi今日为你打造</h2>
+          <a class="tit-more txt-2" href="javascript:;">更多</a>
+        </section>
+        <section class="scroll-wrap">
+          <section class="card-scroll">
+            <div class="card-list">
+              <radio-card></radio-card>
+              <card v-for="card in recommendCard" :key="card.id" :card-data="card"></card>
+            </div>
+          </section>
+        </section>
+      </section>
+      <section class="recommend-row">
+        <section class="recommend-title flex-box">
+          <h2 class="tit-txt txt-2">歌单补给站</h2>
+          <a class="tit-more txt-2" href="javascript:;">更多</a>
+        </section>
+        <section class="scroll-wrap">
+          <section class="card-scroll">
+            <div class="card-list">
+              <card v-for="card in supplyCard" :key="card.id" :card-data="card"></card>
+            </div>
+          </section>
+        </section>
+      </section>
+      <section class="recommend-row">
+        <section class="recommend-title flex-box">
+          <h2 class="tit-txt txt-2">大家都在听</h2>
+          <a class="tit-more txt-2" href="javascript:;">更多</a>
+        </section>
+        <section class="scroll-wrap">
+          <section class="card-scroll">
+            <div class="card-list gird-box gird-list">
+              <single-card v-for="card in singleCard" :key="card.id" :card-data="card"></single-card>
+            </div>
+          </section>
         </section>
       </section>
     </section>
@@ -25,58 +53,55 @@
 
 <script setup>
 import Search from '../../components/search/search.vue'
-import RadioCard from '../../components/card/radioCard.vue'
 import Card from '../../components/card/card.vue'
-import { ref } from 'vue'
-
-const cardData1 = {
-  img: "https://qpic.y.qq.com/music_cover/xiabfMZAmQ0PYUzgCvOicArIoGLzqL3n6q3fDiawWkhTTVWgGNM52HBNA/300?n=1",
-  playNum: 55860185,
-  title: "欧美| 流行节奏控",
-  cardType: 1,
-  classify: 1
-}
-const cardData2 = {
-  img: "https://qpic.y.qq.com/music_cover/xiabfMZAmQ0PYUzgCvOicArIoGLzqL3n6q4X4NiaWS01Fvtn063nqHY2Q/300?n=1",
-  playNum: 55860185,
-  title: "欧美| 欧美| 流行轻有氧",
-  cardType: 1,
-  classify: 1
-}
-const cardData3 = {
-  img: "https://qpic.y.qq.com/music_cover/MKjEtF7diatibd6B0iaeF5KguYHTWhScOADLtR9xjUjEEz5uYMCCKOA9w/300?n=1",
-  playNum: 55860185,
-  title: "最·陈奕迅",
-  cardType: 1,
-  classify: 1
-}
-const cardData4 = {
-  img: "https://qpic.y.qq.com/music_cover/4pmnRu5sL5QbtO8OS8NKJU7UhBRvQcdookqiaqkurvWR8j7PKeyzcFA/300?n=1",
-  playNum: 55860185,
-  title: "古典| 美妙心情",
-  cardType: 1,
-  classify: 1
-}
-const cardData5 = {
-  img: "https://qpic.y.qq.com/music_cover/4pmnRu5sL5QbtO8OS8NKJU7UhBRvQcdookqiaqkurvWR8j7PKeyzcFA/300?n=1",
-  playNum: 55860185,
-  title: "古典| 美妙心情",
-  cardType: 1,
-  classify: 1
-}
-const cardData6 = {
-  img: "https://qpic.y.qq.com/music_cover/4pmnRu5sL5QbtO8OS8NKJU7UhBRvQcdookqiaqkurvWR8j7PKeyzcFA/300?n=1",
-  playNum: 55860185,
-  title: "古典| 美妙心情",
-  cardType: 1,
-  classify: 1
-}
+import RadioCard from '../../components/card/radioCard.vue'
+import SingleCard from '../../components/card/singleCard.vue'
+import Slide from '../../components/scroll/slide.vue'
+import request from '../../config/request'
+import { reactive, ref, onMounted, computed } from 'vue'
 
 const contShow = ref('block')
+
+const cardData = ref([])
+
+// slide配置，其中 nums, getImgPath为必填配置
+const slideConfig = reactive({
+  nums: 6,
+  raduis: true,
+  dot: true,
+  getImgPath: (num) => {
+    const path = `../../assets/img/homeSlide/slide${num}.png`
+    const modules = import.meta.globEager("../../assets/img/homeSlide/slide*.png")
+    return modules[path].default
+  } 
+})
 
 const handleSearchBarClick = (show) => {
   contShow.value = show ? 'none' : 'block'
 }
+
+// 请求card数据
+onMounted(async () => {
+  const res = await request({
+    url: '/recommend/cards',
+    method: 'GET',
+  })
+  cardData.value = res.data
+})
+
+const recommendCard = computed(() => {
+  return cardData.value.filter(val => val.classify === 1)
+})
+
+const supplyCard = computed(() => {
+  return cardData.value.filter(val => val.classify === 2)
+})
+
+const singleCard = computed(() => {
+  return cardData.value.filter(val => val.classify === 3)
+})
+
+
 </script>
 
 <style scoped>
@@ -108,5 +133,13 @@ const handleSearchBarClick = (show) => {
 .card-list {
   margin-left: .12rem;
   white-space: nowrap;
+}
+.recommend-slide {
+  margin: 0 .2rem;
+}
+.gird-list {
+  grid-template-columns: 2.8rem 2.8rem 2.8rem;
+  grid-template-rows: .52rem .52rem .52rem;
+  row-gap: .2rem;
 }
 </style>

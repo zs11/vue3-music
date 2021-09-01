@@ -3,7 +3,10 @@
     <div class="card-box">
       <div class="music-media">
         <img :src="cardData.img" alt="media" class="media-img">
-        <div class="media-play"></div>
+        <div class="media-play">
+          <img src="../../assets/img/play.png" alt="play" class="play-btn">
+          <span class="paly-num-count">{{playnum}}</span>
+        </div>
       </div>
       <div class="music-title">
         <h3 class="tit-txt txt-2">{{cardData.title}}</h3>
@@ -13,20 +16,23 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-
-// cardData = {
-//   img: "http",
-//   playNum: 0,
-//   title: "xxx",
-//   cardType: 1,
-//   classify: 1
-// }
+import { computed, defineProps } from 'vue'
 
 const props = defineProps({
   cardData: {
     required: true
   }
+})
+
+const playnum = computed(() => {
+  const num = props.cardData.playnum
+  let res = 0
+  if (num < 10000) {
+    res = (1).toFixed(1)
+  } else {
+    res = (num / 10000).toFixed(1)
+  }
+  return `${res}万`
 })
 </script>
 
@@ -65,5 +71,25 @@ const props = defineProps({
 }
 .music-card:last-child {
   margin-right: .12rem;
+}
+.media-play {
+  position: absolute;
+  bottom: -.05rem;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(206, 206, 206, .9);
+  backdrop-filter: blur(2px);
+  padding: 0 .07rem;
+  border-radius: .09rem;
+}
+.media-play .play-btn {
+  width: .1rem;
+  height: .1rem;
+}
+.media-play .paly-num-count {
+  margin-left: .02rem;
+  color: #fff;
 }
 </style>

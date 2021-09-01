@@ -1,5 +1,7 @@
 <template>
-  singer
+  <div>
+    singer
+  </div>
 </template>
 
 <script setup>

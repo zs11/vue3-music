@@ -3,7 +3,7 @@ import qs from 'qs'
 
 const env = process.env.NODE_ENV
 
-const baseUrl = ''
+const baseUrl = 'http://localhost:3010'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 

@@ -1,11 +1,22 @@
 <template>
-  <m-header></m-header>
-  <router-view></router-view>
+  <m-header :short-video="$shortVideo"></m-header>
+  <router-view @video-event="videoPageHandle"></router-view>
+  <m-footer v-show="!$shortVideo"></m-footer>
+  <play-bar v-show="!$shortVideo"></play-bar> 
 </template>
 
 <script setup>
 import MHeader from './views/header/header.vue'
+import MFooter from './views/footer/footer.vue'
+import PlayBar from './components/playBar/playBar.vue'
+import { ref } from 'vue'
 
+// $shortVideo 短视频页
+const $shortVideo = ref(false)
+
+const videoPageHandle = (state) => {
+  $shortVideo.value = state
+}
 </script>
 
 <style>
@@ -23,6 +34,9 @@ h1, h2, h3, h4, h5, h6 {
 body {
   font-size: .14rem;
   font: 300 12px/1.5 -apple-system,sans-serif;;
+}
+body {
+  margin: 0;
 }
 a {
   text-decoration: none;
@@ -47,5 +61,8 @@ a {
 }
 .flex-box {
   display: flex;
+}
+.gird-box {
+  display: grid;
 }
 </style>

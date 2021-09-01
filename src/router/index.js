@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Recommend from '../views/recommend/recommend.vue'
 import Singer from '../views/singer/singer.vue'
 import TopList from '../views/topList/topList.vue'
+import ShortVideo from '../views/shortVideo/shortVideo.vue'
 
 const routes = [
   {
@@ -19,13 +20,16 @@ const routes = [
   {
     path: '/singer',
     component: Singer
+  },
+  {
+    path: '/short-video',
+    component: ShortVideo
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-  linkExactActiveClass: 'current txt-3'
+  routes
 })
 
 export default router
