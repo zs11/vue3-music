@@ -1,5 +1,6 @@
 import Video from './video'
-import { createDom, deepCopy, getDom, getType } from './util'
+import { createDom, deepCopy, getDom, getType } from './utils/util'
+import videoControls from './controls'
 import './index.css'
 
 class VideoPlayer extends Video {
@@ -30,6 +31,7 @@ class VideoPlayer extends Video {
     }
     this.videoInfoInit(this.config.info)
     this.start()
+    videoControls.call(this)
   }
 
   start(url = this.config.url) {

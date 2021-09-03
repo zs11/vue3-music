@@ -1,4 +1,4 @@
-import { createDom } from './util'
+import { createDom } from './utils/util'
 
 class Video {
   constructor(options) {
