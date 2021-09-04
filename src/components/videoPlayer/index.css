@@ -15,8 +15,9 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  padding: .16rem .16rem .36rem;
+  padding: .16rem .16rem .42rem;
   color: #fff;
+  transition: opacity .4s linear;
 }
 
 .video-info .video-author {
@@ -44,14 +45,6 @@
   z-index: 10;
 }
 
-.show {
-  display: block;
-}
-
-.hide {
-  display: none;
-}
-
 .play-icon, .pause-icon {
   display: block;
   width: 100%;
@@ -64,14 +57,14 @@
   right: 0;
   bottom: 0;
   z-index: 10;
-  height: .32rem;
+  height: .36rem;
 }
 
 .progress-control .player-progress {
   position: relative;
   top: 0;
   left: 0;
-  height: .04rem;
+  height: .024rem;
 }
 
 .progress-inner {
@@ -89,4 +82,74 @@
   width: 0;
   height: 100%;
   background: hsla(0, 0%, 100%, .6);
+}
+
+.player-progress .progress-btn {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  z-index: 1;
+}
+
+.player-progress .progress-btn::before {
+  content: "";
+  display: block;
+  width: .06rem;
+  height: .06rem;
+  background: hsla(0, 0%, 100%, .6);
+  position: relative;
+  /* left: 50%; */
+  border-radius: 50%;
+}
+
+.opacity-hide {
+  opacity: 0;
+}
+
+.player-progress.touched {
+  height: .04rem;
+}
+
+.player-progress.touched .progress-played {
+  background: #fff;
+}
+
+.player-progress.touched .progress-btn::before {
+  width: .08rem;
+  height: .08rem;
+  background: #fff;
+}
+
+.progress-move-info {
+  position: absolute;
+  z-index: 10;
+  top: -.72rem;
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.progress-move-info .video-current, .progress-move-info .video-duration {
+  font-size: .2rem;
+  font-weight: 400;
+}
+
+.progress-move-info .divide {
+  margin: 0 .1rem;
+}
+
+.progress-move-info .divide, .progress-move-info .video-duration{
+  opacity: .6;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
 }

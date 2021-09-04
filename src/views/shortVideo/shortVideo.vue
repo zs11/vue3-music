@@ -20,7 +20,7 @@ import 'swiper/css/pagination'
 import XGPlayer from 'xgplayer'
 import VPlayer from '../../components/videoPlayer'
 import request from '../../config/request'
-import { onMounted, defineEmits, ref, nextTick, reactive } from 'vue'
+import { onMounted, defineEmits, ref, nextTick, reactive, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 SwiperCore.use([Pagination])

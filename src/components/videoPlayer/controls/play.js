@@ -7,13 +7,13 @@ let play = function() {
                         {}, 'play-controls-wrap')
   root.appendChild(btn)
 
+  const el = btn
+
   function onPlay() {
     player.video.addEventListener('play', (event) => {
-      const el = document.querySelector('.play-controls-wrap')
       addClass(el, 'hide')
     })
     player.video.addEventListener('pause', (event) => {
-      const el = document.querySelector('.play-controls-wrap')
       removeClass(el, 'hide')
     })  
   }
