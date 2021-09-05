@@ -9,7 +9,7 @@
 import MHeader from './views/header/header.vue'
 import MFooter from './views/footer/footer.vue'
 import PlayBar from './components/playBar/playBar.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 // $shortVideo 短视频页
 const $shortVideo = ref(false)
@@ -17,6 +17,15 @@ const $shortVideo = ref(false)
 const videoPageHandle = (state) => {
   $shortVideo.value = state
 }
+
+onMounted(() => {
+  let vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+  window.addEventListener('resize', () => {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`) 
+  })
+})
 </script>
 
 <style>

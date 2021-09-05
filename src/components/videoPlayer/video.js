@@ -7,6 +7,9 @@ class Video {
       autoplay: options.autoplay,
       loop: options.loop,
       muted: options.muted,
+      'x5-playsinline': "",
+      'playsinline': "",
+      'webkit-playsinline': "",
     }
     if (options.muted) {
       this.videoConfig.muted = 'muted'

@@ -33,7 +33,7 @@ export function createDom(el = 'div', tpl = '', attrs = {}, cname = '') {
     const key = item
     const value = attrs[item]
     if (el === 'video' || el === 'audio') {
-      if (value) {
+      if (value !== undefined) {
         dom.setAttribute(key, value)
       }
     } else {

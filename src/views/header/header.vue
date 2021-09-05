@@ -3,7 +3,7 @@
     <section class="top-wrap flex-box" v-show="!shortVideo">
       <div class="top-music-logo flex-box">
         <img src="../../assets/img/music.png" alt="logo" class="logo-img">
-        <img class="top-music-title" src="../../assets/img/title.png" alt="title">
+        <img src="../../assets/img/title.png" alt="title" class="top-music-title">
       </div>
     </section>
     <section class="tab-wrap">
@@ -77,18 +77,9 @@ watch(() => props.shortVideo, () => {
   height: 100%;
   border-radius: 0;
 }
-.top-music-desc {
-  flex-direction: column;
-}
-.top-music-desc .top-music-title {
-  font-size: .16rem;
-  color: #000;
-  font-weight: 400;
-}
-.top-music-desc .top-music-txt {
-  font-size: .12rem;
-  color: #8a8a8a;
-  font-weight: 400;
+.top-music-title {
+  width: 1.42rem;
+  height: 100%;
 }
 .video-header {
   z-index: 10;
