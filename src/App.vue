@@ -29,6 +29,8 @@ onMounted(() => {
 </script>
 
 <style>
+@import './assets/css/font.css';
+
 html {
   font-size: calc(100vw / 3.75);
 }
@@ -42,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 body {
   font-size: .14rem;
-  font: 300 12px/1.5 -apple-system,sans-serif;;
+  font: 400 12px/1.5 HarmonyOS_Regular,-apple-system,sans-serif;
 }
 body {
   margin: 0;

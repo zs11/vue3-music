@@ -71,7 +71,7 @@ let progress = function() {
   function getInfoTime(_time) {
     const unit = 60
     let minute = Math.floor(_time / unit)
-    let second = Math.ceil(_time % 60)
+    let second = Math.floor(_time % 60)
     minute = minute < 10 ? `0${minute}` : `${minute}`
     second = second < 10 ? `0${second}` : `${second}`
     return `${minute}:${second}`

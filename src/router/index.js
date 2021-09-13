@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Recommend from '../views/recommend/recommend.vue'
 import Singer from '../views/singer/singer.vue'
 import TopList from '../views/topList/topList.vue'
-import ShortVideo from '../views/shortVideo/shortVideo.vue'
+import VideoStream from '../views/shortVideo/videoStream.vue'
 
 const routes = [
   {
@@ -22,8 +22,8 @@ const routes = [
     component: Singer
   },
   {
-    path: '/short-video',
-    component: ShortVideo
+    path: '/video',
+    component: VideoStream
   }
 ]
 

@@ -1,12 +1,12 @@
 <template>
-  <header class="music-header" :class="{'video-header': shortVideo}">
+  <header class="music-header" :class="{'video-page-header': shortVideo}">
     <section class="top-wrap flex-box" v-show="!shortVideo">
       <div class="top-music-logo flex-box">
         <img src="../../assets/img/music.png" alt="logo" class="logo-img">
         <img src="../../assets/img/title.png" alt="title" class="top-music-title">
       </div>
     </section>
-    <section class="tab-wrap">
+    <section class="tab-wrap" :class="{'video-header': shortVideo}">
       <tab :tabs="tabs" :config="config"></tab>
     </section>
   </header>
@@ -14,6 +14,7 @@
 
 <script setup>
 import Tab from '../../components/tab/tab.vue'
+import { TABS as tabs } from '../../config/global'
 import { defineProps, reactive, watch } from 'vue';
 
 const props = defineProps({
@@ -23,25 +24,6 @@ const props = defineProps({
   }
 })
 
-const tabs = [
-  {
-    name: "推荐",
-    path: '/recommend'
-  },
-  {
-    name: "排行",
-    path: '/top-list',
-  },
-  {
-    name: "歌手",
-    path: '/singer'
-  },
-  {
-    name: "短视频",
-    path: '/short-video'
-  }
-]
-
 const config = reactive({
   divide: true,
   activeColor: 'rgba(44, 162, 249, 1)',
@@ -50,8 +32,8 @@ const config = reactive({
 
 watch(() => props.shortVideo, () => {
   if (props.shortVideo) {
-    config.color = 'rgba(255, 255, 255, .8)'
-    config.activeColor = 'rgba(255, 255, 255, 1)'
+    config.color = 'rgba(0, 0, 0, 1)'
+    config.activeColor = 'rgba(255, 130, 0, 1)'
   } else {
     config.color = 'rgba(0, 0, 0, 1)'
     config.activeColor = 'rgba(44, 162, 249, 1)'
@@ -82,11 +64,19 @@ watch(() => props.shortVideo, () => {
   height: 100%;
 }
 .video-header {
-  z-index: 10;
-  position: fixed;
+  position: relative;
   left: 50%;
-  top: .2rem;
+  margin: .18rem 0 .1rem 0;
   width: 2.2rem;
   transform: translate3d(-50%, 0, 0);
+}
+.video-page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: .01rem solid #e6e6e6;
+  background-color: #fff;
 }
 </style>

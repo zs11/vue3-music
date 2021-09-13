@@ -95,7 +95,7 @@ if (props.config.router) {
   height: .4rem;
   line-height: .4rem;
   text-align: center;
-  font-size: .14rem;
+  font-size: .16rem;
 }
 .flex-box {
   display: flex;

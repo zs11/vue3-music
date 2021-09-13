@@ -11,10 +11,11 @@ class VideoPlayer extends Video {
     this.config = deepCopy({
       width: 720,
       height: 576,
-      controls: true,
+      controls: false,
       autoplay: false,
       loop: false,
       muted: 'muted',
+      v_controls: true
     }, options)
     if (typeof this.config.width === 'number') {
       this.root.style.width = `${this.config.width}px`
@@ -31,7 +32,9 @@ class VideoPlayer extends Video {
     }
     this.videoInfoInit(this.config.info)
     this.start()
-    videoControls.call(this)
+    if (this.config.v_controls && !this.config.controls) {
+      videoControls.call(this)
+    }
   }
 
   start(url = this.config.url) {
