@@ -49,6 +49,14 @@ const props = defineProps({
   refreshDelay: {
     type: Number,
     default: 20
+  },
+  momentumLimitTime: {
+    type: Number,
+    default: 300
+  },
+  update: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -57,7 +65,7 @@ const scrollRef = ref(null)
 const _scroll = ref(null)
 
 // scroll methods
-const emitter = defineEmits(['scroll', 'scrollToEnd', 'touchToEnd', 'beforeScroll'])
+const emitter = defineEmits(['scroll', 'scrollToEnd', 'touchToEnd', 'beforeScroll', 'scrollValue'])
 
 const initScroll = () => {
   if (!scrollRef.value) {
@@ -67,28 +75,34 @@ const initScroll = () => {
     probeType: props.probeType,
     click: props.click,
     scrollX: props.scrollX,
-    scrollY: props.scrollY
+    scrollY: props.scrollY,
+    momentumLimitTime: props.momentumLimitTime
   })
 
   // listen scroll
   if (props.listenScroll) {
     _scroll.value.on('scroll', (pos) => {
-      console.log(pos.y);
       emitter('scroll', pos)
     })
   }
 
   // listen pullup(上拉)
   if (props.pullup) {
-    _scroll.value.on('scrollEnd', () => {
-      emitter('scrollToEnd')
+    _scroll.value.on('scrollEnd', (pos) => {
+      if (_scroll.value.y <= (_scroll.value.maxScrollY + 50) && !props.update) {
+        emitter('scrollToEnd')
+        console.log('scroll end');
+      }
     })
   }
 
   // listen pulldown(下拉)
   if (props.pulldown) {
     _scroll.value.on('touchEnd', (pos) => {
-      console.log(pos.y);
+      if (pos.y > 40 && !props.update) {
+        emitter('touchToEnd')
+        console.log('touch end');
+      }
     })
   }
 
@@ -98,6 +112,8 @@ const initScroll = () => {
       emitter('beforeScroll')
     })
   }
+
+  emitter('scrollValue', _scroll.value)
 }
 
 const disable = () => {
