@@ -69,6 +69,7 @@
 <script setup>
 import { onMounted, defineEmits, ref, nextTick, reactive, watch, computed } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
+import { useStore } from "vuex";
 import Scroll from '../../components/scroll/scroll.vue';
 import VPlayer from '../../components/videoPlayer'
 import request from '../../config/request'
@@ -146,11 +147,12 @@ const videoIdx = ref(0)
 
 
 // 视频页进入事件
-const emitter = defineEmits(['videoEvent'])
-emitter('videoEvent', true)
+const store = useStore()
+const setShortVideoStatus = (val) => store.commit('setShortVideoStatus', val)
+setShortVideoStatus(true)
 
 onBeforeRouteLeave(() => {
-  emitter('videoEvent', false)
+  setShortVideoStatus(false)
 })
 
 

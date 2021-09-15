@@ -1,21 +1,38 @@
 <template>
-  <m-header :short-video="$shortVideo"></m-header>
-  <router-view @video-event="videoPageHandle"></router-view>
-  <m-footer v-show="!$shortVideo"></m-footer>
-  <play-bar v-show="!$shortVideo"></play-bar> 
+  <m-header :short-video="shortVideoStatus"></m-header>
+  <router-view></router-view>
+  <m-footer v-show="!shortVideoStatus"></m-footer>
+  <play-bar v-show="!shortVideoStatus" :class="playBarStyle" @animationend="handleBarAnimation"></play-bar>
+  <music-player v-if="musicPlayerStatus" :class="musicPlayerStyle" @animationend="handlePlayerAnimation"></music-player>
 </template>
 
 <script setup>
 import MHeader from './views/header/header.vue'
 import MFooter from './views/footer/footer.vue'
 import PlayBar from './components/playBar/playBar.vue'
-import { ref, onMounted } from 'vue'
+import MusicPlayer from './components/musicPlayer/musicPlayer.vue'
+import { ref, onMounted, computed } from 'vue'
+import { useStore } from "vuex";
 
-// $shortVideo 短视频页
-const $shortVideo = ref(false)
+// shortVideo 短视频页flag
+const store = useStore()
+const shortVideoStatus = computed(() => store.state.shortVideoStatus)
+const musicPlayerStatus = computed(() => store.state.musicPlayerStatus)
+const playBarStyle = computed(() => store.state.playBarStyle)
+const musicPlayerStyle = computed(() => store.state.musicPlayerStyle)
+const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
+const setPlayBarStyle = (val) => store.commit('setPlayBarStyle', val)
 
-const videoPageHandle = (state) => {
-  $shortVideo.value = state
+const handleBarAnimation = (event) => {
+  if (event.target && event.target.className.indexOf('bar-fall') !== -1) {
+    setMusicPlayerStyle('rise')
+  }
+}
+
+const handlePlayerAnimation = (event) => {
+  if (event.target && event.target.className.indexOf('fall') !== -1) {
+    setPlayBarStyle('bar-rise')
+  }
 }
 
 onMounted(() => {
@@ -57,6 +74,9 @@ a {
 }
 .bg-2 {
   background-color: #fff;
+}
+.bg-3 {
+  background-color: #f2f2f2;
 }
 .txt-1 {
   color: rgba(26, 26, 26, .5);

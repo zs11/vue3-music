@@ -1,6 +1,6 @@
 <template>
   <section class="music-play-bar">
-    <div class="play-bar-box">
+    <div class="play-bar-box"  @click.prevent="handlebarClick">
       <div class="flotation-bar">
         <div class="play-bar-music">
           <img src="http://localhost:3020/pic1.png" alt="music" class="play-img">
@@ -25,6 +25,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
+import { useStore } from 'vuex';
 
 // 移动动画
 const moveAnim = ref('')
@@ -37,6 +38,19 @@ const handleMoveAnim = () => {
     moveAnim.value = 'move-back-anim'
   } else {
     moveAnim.value = ''
+  }
+}
+
+// 播放条click处理
+const store = useStore()
+const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
+const setPlayBarStyle = (val) => store.commit('setPlayBarStyle', val)
+
+const handlebarClick = (event) => {
+  const className = event.target.className
+  if (className && className.indexOf('.play-btn') === -1) {
+    setMusicPlayerStatus(true)
+    setPlayBarStyle('bar-fall')
   }
 }
 
@@ -142,6 +156,28 @@ const handleMoveAnim = () => {
   }
   100% {
     left: 0%;
+  }
+}
+.bar-fall {
+  animation: barFall .2s linear forwards;
+}
+@keyframes barFall {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, .8rem, 0);
+  }
+}
+.bar-rise {
+  animation: barRise .2s linear forwards;
+}
+@keyframes barRise {
+  0% {
+    transform: translate3d(0, .8rem, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
   }
 }
 </style>
