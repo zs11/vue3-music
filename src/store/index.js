@@ -4,11 +4,13 @@ const debug = process.env.NODE_ENV !== 'production'
 
 // 全局 state, getter, action, mutation
 
+// musicPlayerStatus 播放页显示，musicStatus 音乐播放状态
 const state = () => ({
   musicPlayerStatus: false,
   shortVideoStatus: false,
   playBarStyle: '',
-  musicPlayerStyle: ''
+  musicPlayerStyle: '',
+  musicStatus: 'pause'
 })
 
 const getters = {}
@@ -28,6 +30,9 @@ const mutations = {
   setMusicPlayerStyle (state, style) {
     state.musicPlayerStyle = style
   },
+  setMusicStatus (state, status) {
+    state.musicStatus = status
+  }
 }
 
 export default createStore({

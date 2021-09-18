@@ -3,14 +3,14 @@
     <div class="play-bar-box"  @click.prevent="handlebarClick">
       <div class="flotation-bar">
         <div class="play-bar-music">
-          <img src="http://localhost:3020/pic1.png" alt="music" class="play-img">
+          <img src="http://localhost:3020/music/music1.jpg" alt="music" class="play-img">
         </div>
         <div class="play-bar-cont flex-box">
           <div class="cont-left">
             <img src="../../assets/img/cd.png" alt="cd" class="cd-img">
           </div>
           <div class="cont-center flex-box">
-            <div class="play-music txt-4" :class="moveAnim" @animationend="handleMoveAnim">学到老爱到老 - 金润吉</div>
+            <div class="play-music txt-4" :class="moveAnim" @animationend="handleMoveAnim">半糖主义 - S.H.E</div>
           </div>
           <div class="cont-right">
             <div class="play-btn flex-box">
@@ -54,6 +54,9 @@ const handlebarClick = (event) => {
   }
 }
 
+onMounted(() => {
+  const historymusic = localStorage.getItem('historyMusicId')
+})
 </script>
 
 <style scoped>

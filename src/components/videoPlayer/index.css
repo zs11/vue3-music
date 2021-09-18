@@ -99,7 +99,7 @@
   display: block;
   width: .06rem;
   height: .06rem;
-  background: hsla(0, 0%, 100%, .6);
+  background: hsla(0, 0%, 100%, 1);
   position: relative;
   /* left: 50%; */
   border-radius: 50%;

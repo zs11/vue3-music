@@ -10,23 +10,25 @@
 
 <script setup>
 import Lyric from 'lyric-parser'
-import { defineProps, nextTick, onMounted, ref, watch, defineEmits } from "vue";
+import { defineProps, nextTick, onMounted, ref, watch, defineEmits, computed } from "vue";
+import { useStore } from "vuex";
 
 const props = defineProps({
   musicLyric: {
     type: Object,
     default: {}
-  },
-  isPlaying: {
-    type: Boolean,
-    default: false
   }
 })
+
+const store = useStore()
+
+// audio statut
+const musicStatus = computed(() => store.state.musicStatus)
 
 const _lyric = ref(null)
 const curLine = ref(0)
 const scrollStyle = ref({ transform: 'translate3d(0, 0, 0)' })
-const basicHeight = 0.18
+const basicHeight = 0.21
 const emitter = defineEmits(['LyricUpdate', 'Loop'])
 
 const handleLyric = ({ lineNum, txt }) => {
@@ -47,7 +49,7 @@ watch(() => props.musicLyric, (newLyric, oldLyric) => {
     if (!_lyric.value) {
       initLyric()
     } else {
-      _lyric.value.stop()
+      stop()
       nextTick(() => {
         initLyric()
         emitter('LyricUpdate')
@@ -56,13 +58,25 @@ watch(() => props.musicLyric, (newLyric, oldLyric) => {
   }
 })
 
-watch(() => props.isPlaying, (newState, oldState) => {
-  newState ? _lyric.value.play() : _lyric.value.stop()
+watch(() => musicStatus.value, (newStatus) => {
+  togglePlay()
 })
 
 const loop = () => {
   emitter('Loop')
   _lyric.value && _lyric.value.seek(0)
+}
+
+const play = () => {
+  _lyric.value && _lyric.value.play()
+}
+
+const togglePlay = () => {
+  _lyric.value && _lyric.value.togglePlay()
+}
+
+const stop = () => {
+  _lyric.value && _lyric.value.stop()
 }
 
 const togglePlaying = () => {
@@ -77,19 +91,19 @@ const setProgress = (percent) => {
 <style scoped>
 .lyric_bd {
   width: 100%;
-  height: .6rem;
+  height: .66rem;
   overflow: hidden;
 }
 .lyric_bd {
   margin-top: .04rem;
 }
 .lyric-line {
-  font-size: .12rem;
+  font-size: .14rem;
   line-height: 1.5;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, .5);
 }
 .lyric-line.current {
   color: rgb(44, 162, 249);

@@ -22,12 +22,12 @@
           <div class="music-author">
             <span>{{author}}</span>
           </div>
-          <music-player :musicLyric="musicLyric" :isPlaying="isPlaying" @lyric-update="handleLyricUpdate"></music-player>
+          <music-player :musicLyric="musicLyric" @lyric-update="handleLyricUpdate"></music-player>
         </div>
       </div>
-      <div class="music-interactive"></div>
-      <div class="audio-wrap">
-        <audio :src="musicInfo.musicUrl" height="0" width="0" ref="audioRef"></audio>
+      <div class="music-interactive">
+        <music-audio :url="musicInfo.musicUrl" :progress="true" :delay="300"
+          @status-change="handleAudioStatusChange"></music-audio>
       </div>
     </div>
   </section>
@@ -38,6 +38,7 @@ import { reactive, ref, computed, onMounted, nextTick } from 'vue';
 import { useStore } from "vuex";
 import request from '../../config/request'
 import MusicPlayer from "./musicLyric.vue";
+import MusicAudio from "./audio.vue";
 
 // store
 const store = useStore()
@@ -58,11 +59,6 @@ const musicLyric = computed(() => {
   return {}
 })
 
-// audio ref
-const audioRef = ref(null)
-
-// isPlaying
-const isPlaying = ref(false)
 
 // onMounted
 onMounted(async () => {
@@ -75,9 +71,6 @@ onMounted(async () => {
   })
   const { data } = res
   musicInfo.value = data
-  audioRef.value.addEventListener('canplay', () => {
-    audioPlay()
-  })
 })
 
 
@@ -86,29 +79,16 @@ const handleFallClick = () => {
   setMusicPlayerStyle('fall')
 }
 
+// audio status change
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
+
+const handleAudioStatusChange = (val) => {
+  setMusicStatus(val)
+}
+
 // lyric update
 const handleLyricUpdate = () => {
-  audioPlay()
 }
-
-// audio play / pause
-const audioPlay = () => {
-  const playPromise = audioRef.value.play()
-  if (playPromise !== undefined) {
-    playPromise.then(_ => {
-      isPlaying.value = true
-      audioRef.value.play()
-    })
-    .catch(error => {
-    })
-  }
-}
-
-const audioPause = () => {
-  isPlaying.value = false
-  audioRef.value.pause()
-}
-
 </script>
 
 <style scoped>
@@ -187,10 +167,14 @@ const audioPause = () => {
 }
 .info-box .music-name {
   margin-top: .12rem;
-  font-size: .18rem;
+  font-size: .22rem;
 }
 .info-box .music-author {
   font-size: .14rem;
-  color: rgba(255, 255, 255, .7);
+  color: rgba(255, 255, 255, .6);
+  font-weight: 300;
+}
+.music-interactive {
+  margin: .1rem .32rem 0;
 }
 </style>
