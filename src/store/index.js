@@ -1,4 +1,5 @@
 import { createStore, createLogger } from "vuex"
+import { localStorageObj } from '../config/storage'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -11,7 +12,8 @@ const state = () => ({
   playBarStyle: '',
   musicPlayerStyle: '',
   musicStatus: 'pause',
-  musicProgressStatus: 0
+  musicProgressStatus: 0,
+  musicHistory: localStorageObj.get('musicHistory', true) || []
 })
 
 const getters = {}
@@ -36,7 +38,20 @@ const mutations = {
   },
   setMusicProgressStatus (state, status) {
     state.musicProgressStatus = status
-  } 
+  },
+  setMusicHistory (state, history) {
+    let histories = state.musicHistory
+    const lastHistory = histories[histories.length - 1]
+    if (lastHistory && lastHistory.id === history.id) {
+      return
+    }
+    if (histories.length > 30) {
+      histories = histories.slice(1)
+    }
+    histories = histories.concat(history)
+    state.musicHistory = histories
+    localStorageObj.set('musicHistory', histories, true)
+  }
 }
 
 export default createStore({

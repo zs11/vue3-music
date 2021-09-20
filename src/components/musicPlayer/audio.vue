@@ -48,7 +48,6 @@
 
 <script setup>
 import { computed, defineProps, onMounted, ref, defineEmits, watch, reactive } from "vue";
-import { useStore } from 'vuex';
 
 const props = defineProps({
   url: {
@@ -65,15 +64,15 @@ const props = defineProps({
   }
 })
 
-const store = useStore()
-const musicStatus = computed(() => store.state.musicStatus)
-
 const emitter = defineEmits(['StatusChange', 'ProgressTouch'])
 
 const audioRef = ref(null)
 const progressRef = ref(null)
+const audioPlayStatus = ref(false)
 const precent = ref(0)
-const useId = ref('#play-icon')
+const useId = computed(() => (
+  audioPlayStatus.value ? '#pause-icon' : '#play-icon'
+))
 const timeInfo = reactive({
   current: '00:00',
   total: '00:00'
@@ -99,7 +98,8 @@ const handleTimeupdate = (event) => {
 }
 
 const play = () => {
-  if (audioRef.value && musicStatus.value !== 'play') {
+  if (audioRef.value && !audioPlayStatus.value) {
+    audioPlayStatus.value = true
     emitter('StatusChange', 'play')
     if (props.delay > 0) {
       setTimeout(playPromise, props.delay)
@@ -121,18 +121,15 @@ const playPromise = () => {
 }
 
 const pause = () => {
-  if (audioRef.value && musicStatus.value !== 'pause') {
+  if (audioRef.value && audioPlayStatus.value) {
+    audioPlayStatus.value = false
     emitter('StatusChange', 'pause')
     audioRef.value.pause()
   }
 }
 
-watch(() => musicStatus.value, (newStatus) => {
-  useId.value = newStatus === 'play' ? '#pause-icon' : '#play-icon'
-})
-
 const handlePlayClick = () => {
-  if (musicStatus.value === 'play') {
+  if (audioPlayStatus.value) {
     pause()
   } else {
     play()
@@ -251,7 +248,7 @@ const handleTouchEnd = (event) => {
   position: relative;
 }
 .interactive-bar {
-  margin-top: .2rem;
+  margin-top: .1rem;
   justify-content: center;
   align-items: center;
 }

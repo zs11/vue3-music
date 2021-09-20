@@ -61,7 +61,6 @@ watch(() => props.musicLyric, (newLyric, oldLyric) => {
 })
 
 watch(() => musicStatus.value, (status) => {
-  console.log(status, isSeek.value);
   if (!isSeek.value || (status === 'pause' && isSeek.value)) {
     togglePlay()
   }
@@ -114,15 +113,16 @@ const setLyric = (curTime) => {
 .lyric-line {
   font-size: .14rem;
   line-height: 1.5;
+  height: .21rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: rgba(255, 255, 255, .5);
 }
 .lyric-line.current {
-  color: rgb(44, 162, 249);
+  color: rgb(255, 255, 255);
   font-size: .16rem;
-  font-weight: 600;
+  height: .24rem;
 }
 .lyric-scroll {
   transition: transform .3s ease-out 0s;
