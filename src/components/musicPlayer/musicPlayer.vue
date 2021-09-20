@@ -27,7 +27,8 @@
       </div>
       <div class="music-interactive">
         <music-audio :url="musicInfo.musicUrl" :progress="true" :delay="300"
-          @status-change="handleAudioStatusChange"></music-audio>
+          @status-change="handleAudioStatusChange"
+          @progress-touch="handleAudioProgressTouch"></music-audio>
       </div>
     </div>
   </section>
@@ -44,6 +45,8 @@ import MusicAudio from "./audio.vue";
 const store = useStore()
 const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
 const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
+const setMusicProgressStatus = (val) => store.commit('setMusicProgressStatus', val)
 
 // music info
 const musicInfo = ref({})
@@ -79,12 +82,18 @@ const handleFallClick = () => {
   setMusicPlayerStyle('fall')
 }
 
-// audio status change
-const setMusicStatus = (val) => store.commit('setMusicStatus', val)
-
+// audio event: 1. status change 2. progress touch
 const handleAudioStatusChange = (val) => {
   setMusicStatus(val)
 }
+
+const handleAudioProgressTouch = (type, cur) => {
+  if (type === 'touchStart') {
+  } else if (type === 'touchMove') {
+    setMusicProgressStatus(cur)
+  } else if (type === 'touchEnd') {
+  }
+} 
 
 // lyric update
 const handleLyricUpdate = () => {

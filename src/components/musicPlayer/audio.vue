@@ -1,7 +1,12 @@
 <template>
   <div class="audio-wrap">
     <div class="audio-progress-wrap" v-if="progress">  
-      <div class="audio-progress">
+      <div class="audio-progress"
+        :class="{'touched': progress.onTouch}"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
+        ref="progressRef">
         <div class="audio-progress-inner">
           <div class="audio-progress-played" :style="{width: precent}"></div>
         </div>
@@ -63,9 +68,10 @@ const props = defineProps({
 const store = useStore()
 const musicStatus = computed(() => store.state.musicStatus)
 
-const emitter = defineEmits(['StatusChange'])
+const emitter = defineEmits(['StatusChange', 'ProgressTouch'])
 
 const audioRef = ref(null)
+const progressRef = ref(null)
 const precent = ref(0)
 const useId = ref('#play-icon')
 const timeInfo = reactive({
@@ -79,15 +85,21 @@ const handleCanplay = () => {
   timeInfo.total = formatTime(duration)
 }
 
-const handleTimeupdate = () => {
-  const current = audioRef.value.currentTime
-  const duration = audioRef.value.duration
-  precent.value = (current / duration).toFixed(4) * 100 + '%'
-  timeInfo.current = formatTime(current)
+const handleTimeupdate = (event) => {
+  if (!progress.onTouch) {
+    const current = audioRef.value.currentTime
+    const duration = audioRef.value.duration
+    if (!Number.isNaN(current) && !Number.isNaN(duration)) {
+      precent.value = (current / duration).toFixed(4) * 100 + '%'
+      timeInfo.current = formatTime(current)
+    }
+  } else {
+    event.preventDefault()
+  }
 }
 
 const play = () => {
-  if (audioRef.value) {
+  if (audioRef.value && musicStatus.value !== 'play') {
     emitter('StatusChange', 'play')
     if (props.delay > 0) {
       setTimeout(playPromise, props.delay)
@@ -109,7 +121,7 @@ const playPromise = () => {
 }
 
 const pause = () => {
-  if (audioRef.value) {
+  if (audioRef.value && musicStatus.value !== 'pause') {
     emitter('StatusChange', 'pause')
     audioRef.value.pause()
   }
@@ -120,7 +132,6 @@ watch(() => musicStatus.value, (newStatus) => {
 })
 
 const handlePlayClick = () => {
-  console.log(musicStatus.value)
   if (musicStatus.value === 'play') {
     pause()
   } else {
@@ -138,6 +149,63 @@ const formatTime = (_time) => {
     second = '0' + second
   }
   return `${minute}:${second}`
+}
+
+// progress touch event
+const progress = reactive({
+  startX: 0,
+  dis: 0,
+  startTime: 0,
+  duration: 0,
+  onTouch: false,
+  precent: 0,
+  current: 0
+})
+
+const countDistance = (type, distance, startTime, duration, precent) => {
+  const width = progressRef.value.clientWidth
+  const disWidth = (distance / width).toFixed(4)
+  if (type === 'duration') {
+    const disNum = disWidth * duration;
+    return Math.max(Math.min(startTime + disNum, duration), 0)
+  } else if (type === 'progress') {
+    const disProgress = disWidth * 100
+    return Math.max(Math.min(parseFloat(precent) + disProgress, 100), 0) + '%'
+  }
+}
+
+const handleTouchStart = (event) => {
+  progress.startX = event.touches && event.touches[0].clientX
+  if (!progress.startX) {
+    return
+  }
+  progress.dis = 0
+  progress.startTime = audioRef.value.currentTime
+  progress.duration = audioRef.value.duration
+  progress.onTouch = true
+  progress.precent = precent.value
+  emitter('ProgressTouch', 'touchStart')
+}
+
+const handleTouchMove = (event) => {
+  const curX = event.touches && event.touches[0].clientX
+  if (!curX) {
+    return
+  }
+  progress.dis = curX - progress.startX
+  const newPG = countDistance('progress', progress.dis, 0, 0, progress.precent)
+  const newCUR = countDistance('duration', progress.dis, progress.startTime, progress.duration)
+  timeInfo.current = formatTime(newCUR)
+  precent.value = newPG
+  emitter('ProgressTouch', 'touchMove', newCUR)
+}
+
+const handleTouchEnd = (event) => {
+  const newCUR = countDistance('duration', progress.dis, progress.startTime, progress.duration)
+  progress.onTouch = false
+  audioRef.value.currentTime = newCUR
+  play()
+  emitter('ProgressTouch', 'touchEnd')
 }
 </script>
 
@@ -209,5 +277,7 @@ const formatTime = (_time) => {
   justify-content: space-between;
   color: rgba(255, 255, 255, .6);
   margin-top: .06rem;
+}
+.audio-progress.touched {
 }
 </style>

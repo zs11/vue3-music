@@ -10,7 +10,8 @@ const state = () => ({
   shortVideoStatus: false,
   playBarStyle: '',
   musicPlayerStyle: '',
-  musicStatus: 'pause'
+  musicStatus: 'pause',
+  musicProgressStatus: 0
 })
 
 const getters = {}
@@ -32,7 +33,10 @@ const mutations = {
   },
   setMusicStatus (state, status) {
     state.musicStatus = status
-  }
+  },
+  setMusicProgressStatus (state, status) {
+    state.musicProgressStatus = status
+  } 
 }
 
 export default createStore({
@@ -42,5 +46,5 @@ export default createStore({
   mutations,
   modules: {},
   strict: debug,
-  plugins: debug ? [createLogger()] : []
+  // plugins: debug ? [createLogger()] : []
 })

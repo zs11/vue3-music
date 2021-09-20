@@ -24,7 +24,9 @@ const store = useStore()
 
 // audio statut
 const musicStatus = computed(() => store.state.musicStatus)
+const musicProgressStatus = computed(() => store.state.musicProgressStatus) 
 
+const isSeek = ref(false)
 const _lyric = ref(null)
 const curLine = ref(0)
 const scrollStyle = ref({ transform: 'translate3d(0, 0, 0)' })
@@ -58,8 +60,20 @@ watch(() => props.musicLyric, (newLyric, oldLyric) => {
   }
 })
 
-watch(() => musicStatus.value, (newStatus) => {
-  togglePlay()
+watch(() => musicStatus.value, (status) => {
+  console.log(status, isSeek.value);
+  if (!isSeek.value || (status === 'pause' && isSeek.value)) {
+    togglePlay()
+  }
+  isSeek.value = false
+})
+
+watch(() => musicProgressStatus.value, (status) => {
+  if (!isSeek.value && musicStatus.value === 'play') {
+    togglePlay()
+  }
+  setLyric(status)
+  isSeek.value = true
 })
 
 const loop = () => {
@@ -83,8 +97,8 @@ const togglePlaying = () => {
   _lyric.value && _lyric.value.togglePlay()
 }
 
-const setProgress = (percent) => {
-  _lyric.value && _lyric.value.seek()
+const setLyric = (curTime) => {
+  _lyric.value && _lyric.value.seek(curTime * 1000)
 }
 </script>
 
