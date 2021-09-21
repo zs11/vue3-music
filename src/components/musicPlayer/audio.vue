@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-wrap">
+  <div class="audio-wrapper">
     <div class="audio-progress-wrap" v-if="progress">  
       <div class="audio-progress"
         :class="{'touched': progress.onTouch}"

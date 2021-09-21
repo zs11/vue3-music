@@ -1,159 +1,126 @@
 <template>
-  <div class="scroll-wrap wrapper" ref="scrollRef">
+  <div class="scroll-wrapper" ref="scrollRef">
     <slot></slot>
   </div>
 </template>
 
 <script setup>
-import BScroll from 'better-scroll'
-import { ref, nextTick, defineProps, onMounted, defineEmits, watch } from 'vue'
+import { reactive, ref, onMounted, onUnmounted, nextTick, useSlots, watch, defineEmits, defineProps } from "vue";
 
-// scroll props
+const scrollRef = ref(null)
+const scrollContent = ref(null)
+const ele = document.documentElement
+const emitter = defineEmits(['refresh', 'loadmore'])
+
+const _scroll = reactive({
+  X: 0,
+  Y: 0,
+  height: 0
+})
+
 const props = defineProps({
-  probeType: {
-    type: Number,
-    default: 1
-  },
-  click: {
-    type: Boolean,
-    default: true
-  },
-  scrollX: {
-    type: Boolean,
-    defaultf: false
-  },
-  scrollY: {
-    type: Boolean,
-    default: true
-  },
-  listenScroll: {
-    type: Boolean,
-    default: false
-  },
   data: {
     type: Array,
-    default: null
-  },
-  pullup: {
-    type: Boolean,
-    default: false
-  },
-  pulldown: {
-    type: Boolean,
-    default: false
-  },
-  beforeScroll: {
-    type: Boolean,
-    default: false
-  },
-  refreshDelay: {
-    type: Number,
-    default: 20
-  },
-  momentumLimitTime: {
-    type: Number,
-    default: 300
-  },
-  update: {
-    type: Boolean,
-    default: false
+    default: []
   }
 })
 
-// scroll ref
-const scrollRef = ref(null)
-const _scroll = ref(null)
-
-// scroll methods
-const emitter = defineEmits(['scroll', 'scrollToEnd', 'touchToEnd', 'beforeScroll', 'scrollValue'])
-
-const initScroll = () => {
-  if (!scrollRef.value) {
-    return
-  }
-  _scroll.value = new BScroll(scrollRef.value, {
-    probeType: props.probeType,
-    click: props.click,
-    scrollX: props.scrollX,
-    scrollY: props.scrollY,
-    momentumLimitTime: props.momentumLimitTime
-  })
-
-  // listen scroll
-  if (props.listenScroll) {
-    _scroll.value.on('scroll', (pos) => {
-      emitter('scroll', pos)
-    })
-  }
-
-  // listen pullup(上拉)
-  if (props.pullup) {
-    _scroll.value.on('scrollEnd', (pos) => {
-      if (_scroll.value.y <= (_scroll.value.maxScrollY + 50) && !props.update) {
-        emitter('scrollToEnd')
-        console.log('scroll end');
-      }
-    })
-  }
-
-  // listen pulldown(下拉)
-  if (props.pulldown) {
-    _scroll.value.on('touchEnd', (pos) => {
-      if (pos.y > 40 && !props.update) {
-        emitter('touchToEnd')
-        console.log('touch end');
-      }
-    })
-  }
-
-  // listen beforeScroll
-  if (props.beforeScroll) {
-    _scroll.value.on('beforeScrollStart', () => {
-      emitter('beforeScroll')
-    })
-  }
-
-  emitter('scrollValue', _scroll.value)
-}
-
-const disable = () => {
-  _scroll.value && _scroll.value.disable()
-}
-
-const enable = () => {
-  _scroll.value && _scroll.value.enable()
-}
-
-const refresh = () => {
-  _scroll.value && _scroll.value.refresh()
-}
-
-const scrollTo = (...rest) => {
-  _scroll.value && _scroll.value.scrollTo.call(_scroll.value, ...rest)
-}
-
-const scrollToElement = (...rest) => {
-  _scroll.value && _scroll.value.scrollToElement.call(_scroll.value, ...rest)
-}
-
-// scroll init
-onMounted(() => {
-  nextTick(() => {
-    initScroll()
-  })
+const _touch = reactive({
+  startX: 0,
+  startY: 0,
+  pulldown: false,
+  refresh: false,
+  pullup: false,
+  load: false
 })
 
-// watch data change
-watch(() => props.data, () => {
+// watch 
+watch(() => _touch.refresh, (newStatus, oldStatus) => {
+  emitter('refresh', newStatus, oldStatus)
   setTimeout(() => {
-    refresh()
-  }, props.refreshDelay)
+    _touch.load = false
+  }, 100)
 })
+
+watch(() => props.data, () => {
+  scrollInY(scrollContent.value, 0, 500)
+  setTimeout(() => {
+    _touch.load = false
+  }, 100)
+})
+
+// scroll event
+const handleScroll = (event) => {
+  event.preventDefault()
+  _scroll.Y = ele.scrollTop
+  if (!_touch.load) {
+    const precent = (ele.clientHeight + ele.scrollTop) / scrollRef.value.clientHeight
+    if (precent >= 0.8) {
+      _touch.load = true
+      emitter('loadmore')
+    }
+  }
+}
+
+const scrollInY = (ele, val, duration = 0) => {
+  ele.style = `transform: translateY(${val}px);transition-duration: ${duration}ms;`
+}
+
+const handleTouchStart = (event) => {
+  if (event.touches[0]) {
+    _touch.startY = event.touches[0].clientY
+  }
+}
+
+const handleTouchMove = (event) => {
+  if (event.touches[0]) {
+    // pulldown
+    const dis = (event.touches[0].clientY - _touch.startY) / 2
+    if (_scroll.Y === 0 && dis > 0) {
+      scrollInY(scrollContent.value, dis, 0)
+      _touch.pulldown = true
+      if (dis >= 32) {
+        _touch.refresh = true
+      }
+    }
+    // pulldown
+  }
+}
+
+const handleTouchEnd = (event) => {
+  if (_touch.pulldown) {
+    if (_touch.refresh) {
+      scrollInY(scrollContent.value, 40, 300)
+    } else {
+      scrollInY(scrollContent.value, 0, 500)
+    }
+    _touch.pulldown = false
+    _touch.refresh = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, false)
+  nextTick(() => {
+    if (scrollRef.value.children && scrollRef.value.children[0]) {
+      scrollContent.value = scrollRef.value.children[0]
+      scrollContent.value.addEventListener('touchstart', handleTouchStart, false)
+      scrollContent.value.addEventListener('touchmove', handleTouchMove, false)
+      scrollContent.value.addEventListener('touchend', handleTouchEnd, false)
+    }
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll, false)
+  if (scrollContent.value) {
+    scrollContent.value.removeEventListener('touchstart', handleTouchStart, false)
+    scrollContent.value.removeEventListener('touchmove', handleTouchMove, false)
+    scrollContent.value.removeEventListener('touchend', handleTouchEnd, false)
+  }
+})
+
 </script>
 
 <style scoped>
-.scroll-wrap {
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-}
 </style>

@@ -26,7 +26,7 @@
           <music-player :musicLyric="musicLyric" @lyric-update="handleLyricUpdate"></music-player>
         </div>
       </div>
-      <div class="music-interactive">
+      <div class="music-audio">
         <music-audio :url="musicInfo.musicUrl" :progress="true" :delay="300"
           @status-change="handleAudioStatusChange"
           @progress-touch="handleAudioProgressTouch"></music-audio>
@@ -251,7 +251,7 @@ const handleLyricUpdate = () => {
   color: rgba(255, 255, 255, .6);
   font-weight: 300;
 }
-.music-interactive {
+.music-audio {
   position: relative;
   margin: .2rem .32rem 0;
 }

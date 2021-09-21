@@ -3,7 +3,7 @@
   <router-view></router-view>
   <m-footer v-show="!shortVideoStatus"></m-footer>
   <play-bar v-show="!shortVideoStatus" :class="playBarStyle" @animationend="handleBarAnimation"></play-bar>
-  <music-player v-if="musicPlayerStatus" :class="musicPlayerStyle" @animationend="handlePlayerAnimation"></music-player>
+  <music-player :class="musicPlayerStyle" @animationend="handlePlayerAnimation"></music-player>
 </template>
 
 <script setup>
@@ -65,6 +65,9 @@ body {
 }
 body {
   margin: 0;
+}
+html, body, #app {
+  height: 100%;
 }
 a {
   text-decoration: none;
