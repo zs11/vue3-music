@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll-wrap wrapper" ref="scrollRef">
+  <div class="scroll-wrap" ref="scrollRef">
     <slot></slot>
   </div>
 </template>
@@ -153,7 +153,5 @@ watch(() => props.data, () => {
 
 <style scoped>
 .scroll-wrap {
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
 }
 </style>

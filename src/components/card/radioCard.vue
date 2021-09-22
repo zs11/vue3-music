@@ -24,7 +24,7 @@
         </div>      
       </div>
       <div class="playing-radio-title">
-        <h3 class="tit-txt txt-2">你的名字是世界上瞒着我最大的事情事情事情</h3>
+        <h3 class="tit-txt txt-2">秋天的风轻轻吹过</h3>
       </div>
     </div>
   </div>

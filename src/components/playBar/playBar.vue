@@ -25,6 +25,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
+import router from '../../router/index'
 import { useStore } from 'vuex';
 
 // 移动动画
@@ -50,7 +51,7 @@ const handlebarClick = (event) => {
   const className = event.target.className
   if (className && className.indexOf('.play-btn') === -1) {
     setMusicPlayerStatus(true)
-    setPlayBarStyle('bar-fall')
+    router.push({path: 'playmusic', query: { id: 1 }})
   }
 }
 

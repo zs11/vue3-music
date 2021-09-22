@@ -265,10 +265,10 @@ const handleTouchEnd = (event) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: .52rem;
-  height: .52rem;
+  width: .82rem;
+  height: .38rem;
   background-color: hsla(0, 0%, 100%, .9);
-  border-radius: 100%;
+  border-radius: .1rem;
 }
 .time-progress {
   justify-content: space-between;

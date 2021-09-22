@@ -76,9 +76,10 @@ const handleTouchMove = (event) => {
   if (event.touches[0]) {
     // pulldown
     const dis = (event.touches[0].clientY - _touch.startY) / 2
-    if (_scroll.Y === 0 && dis > 0) {
+    if (_scroll.Y <= 0 && dis > 0) {
       scrollInY(scrollContent.value, dis, 0)
       _touch.pulldown = true
+      console.log(dis);
       if (dis >= 32) {
         _touch.refresh = true
       }

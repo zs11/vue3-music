@@ -3,6 +3,7 @@ import Recommend from '../views/recommend/recommend.vue'
 import Singer from '../views/singer/singer.vue'
 import TopList from '../views/topList/topList.vue'
 import VideoStream from '../views/shortVideo/videoStream.vue'
+import MusicPlayer from '../components/musicPlayer/musicPlayer.vue'
 
 const routes = [
   {
@@ -24,6 +25,10 @@ const routes = [
   {
     path: '/video',
     component: VideoStream
+  },
+  {
+    path: '/playmusic',
+    component: MusicPlayer
   }
 ]
 

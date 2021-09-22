@@ -3,14 +3,12 @@
   <router-view></router-view>
   <m-footer v-show="!shortVideoStatus"></m-footer>
   <play-bar v-show="!shortVideoStatus" :class="playBarStyle" @animationend="handleBarAnimation"></play-bar>
-  <music-player :class="musicPlayerStyle" @animationend="handlePlayerAnimation"></music-player>
 </template>
 
 <script setup>
 import MHeader from './views/header/header.vue'
 import MFooter from './views/footer/footer.vue'
 import PlayBar from './components/playBar/playBar.vue'
-import MusicPlayer from './components/musicPlayer/musicPlayer.vue'
 import { ref, onMounted, computed } from 'vue'
 import { useStore } from "vuex";
 
@@ -60,8 +58,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight:300
 }
 body {
-  font-size: .14rem;
   font: 400 12px/1.5 HarmonyOS_Regular,-apple-system,sans-serif;
+  font-size: .1rem;
 }
 body {
   margin: 0;

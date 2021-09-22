@@ -2,8 +2,37 @@ import axios from 'axios'
 import qs from 'qs'
 
 const env = process.env.NODE_ENV
+const REALPHONE = true
 
-const baseUrl = 'http://127.0.0.1:3010'
+let baseUrl = 'http://127.0.0.1:3010'
+
+if (REALPHONE) {
+  baseUrl = 'http://192.168.2.102:3010'
+}
+
+const mapData = (data) => {
+  if (typeof data !== 'object') {
+    return data
+  }
+  if (Array.isArray(data)) {
+    data.forEach(val => {
+      const keys = Object.keys(val)
+      keys.forEach(key => {
+        if (typeof val[key] === 'string' && val[key].indexOf('127.0.0.1') !== -1) {
+          val[key] = val[key].replace('127.0.0.1', '192.168.2.102')
+        }
+      })
+    })
+  } else {
+    const keys = Object.keys(data)
+    keys.forEach(key => {
+      if (typeof data[key] === 'string' && data[key].indexOf('127.0.0.1') !== -1) {
+        data[key] = data[key].replace('127.0.0.1', '192.168.2.102')
+      }
+    })
+  }
+  return data
+}
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
@@ -34,7 +63,7 @@ service.interceptors.request.use(req => {
 
 service.interceptors.response.use(res => {
   if (res.status === 200) {
-  
+    res.data = mapData(res.data)
   }
 
   return res

@@ -74,10 +74,10 @@ onMounted(() => {
 }
 .music-slide .slide-wrapper {
   min-height: 1px;
-  overflow: hidden;
 }
 .music-slide .raduis-slide {
   border-radius: .1rem;
+  overflow: hidden;
 }
 .slide-wrapper .slide-content {
   height: 1.42rem;
@@ -91,6 +91,8 @@ onMounted(() => {
   line-height: 1.42rem;
   text-align: center;
   font-size: .26rem;
+  border-radius: .1rem;
+  overflow: hidden;
 }
 .slide-img {
   width: 100%;

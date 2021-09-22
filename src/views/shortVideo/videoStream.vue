@@ -18,6 +18,9 @@
               <span style="margin-left: .04rem">正在刷新中</span>
             </div>
           </div>
+          <div class="refresh-success flex-box" v-if="refreshSuccess">
+            <span>刷新成功</span>
+          </div>
           <div class="video-crad-list">
             <div class="video-card" v-for="(video, index) in videos" :key="video.id">
               <div class="bg-1">
@@ -158,6 +161,7 @@ const formatInteraction = (num) => {
 
 // scroll event 下拉加载处理 / 上拉刷新处理
 const refreshStatus = ref('norefresh')
+const refreshSuccess = ref(false)
 const end = ref(false)
 const loading = ref(false)
 
@@ -181,7 +185,11 @@ const reload = async () => {
     videos.value = data
     nextTick(() => {
       videosInit(data)
-      refreshStatus.value = 'norefresh'
+      refreshSuccess.value = true
+      setTimeout(() => {
+        refreshStatus.value = 'norefresh'
+        refreshSuccess.value = false
+      }, 1000)
     })
   })
 }
@@ -209,6 +217,9 @@ const handleLoadMore = async () => {
   background: #f2f2f2;
 }
 .stream-wrap {
+}
+.scroll-content {
+  position: relative;
 }
 .avatar-box {
   width: .36rem;
@@ -251,6 +262,24 @@ const handleLoadMore = async () => {
   padding-top: .28rem;
   justify-content: center;
   align-items: center;
+}
+.refresh-success {
+  position: absolute;
+  top: .69rem;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: .14rem;
+  background-color: rgb(255, 130, 0);
+  height: .3rem;
+  color: #fff;
+  /* animation: fadeOut linear .6s; */
+}
+@keyframes fadeOut {
+  0% {
+    
+  }
 }
 .video-footer {
   padding: 0 .16rem;
