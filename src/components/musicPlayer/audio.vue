@@ -24,7 +24,7 @@
     </div>
     <div class="audio-interactive-wrap">
       <div class="interactive-bar flex-box">
-        <div class="audio-play-btn">
+        <div class="audio-play-btn" @click="handlePlayClick">
           <svg style="display: none;">
             <defs>
               <symbol id="play-icon" viewBox="0 0 32 32">
@@ -35,7 +35,7 @@
               </symbol>
             </defs>
           </svg>
-          <a href="javascript:;" class="icon-wrap" @click="handlePlayClick">
+          <a href="javascript:;" class="icon-wrap">
             <svg class="icon">
               <use :xlink:href="useId" />
             </svg>

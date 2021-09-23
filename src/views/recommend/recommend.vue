@@ -62,7 +62,10 @@ import { reactive, ref, onMounted, computed } from 'vue'
 
 const contShow = ref('block')
 
-const cardData = ref([])
+const cardData = reactive({
+  collection: [],
+  single: []
+})
 
 // slide配置，其中 nums, getImgPath为必填配置
 const slideConfig = reactive({
@@ -83,22 +86,23 @@ const handleSearchBarClick = (show) => {
 // 请求card数据
 onMounted(async () => {
   const res = await request({
-    url: '/recommend/cards',
+    url: '/recommend/home-cards',
     method: 'GET',
   })
-  cardData.value = res.data
+  cardData.collection = res.data['collection_cards']
+  cardData.single = res.data['single_cards']
 })
 
 const recommendCard = computed(() => {
-  return cardData.value.filter(val => val.classify === 1)
+  return cardData.collection.filter(val => val.classify === 1)
 })
 
 const supplyCard = computed(() => {
-  return cardData.value.filter(val => val.classify === 2)
+  return cardData.collection.filter(val => val.classify === 2)
 })
 
 const singleCard = computed(() => {
-  return cardData.value.filter(val => val.classify === 3)
+  return cardData.single
 })
 
 

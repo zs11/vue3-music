@@ -2,10 +2,12 @@
   <div class="single-card">
     <div class="single-box">
       <div class="music-single flex-box">
-        <img :src="cardData.img" alt="single" class="single-img">
-        <div class="single-music-intro">
-          <h2 class="single-music-name">{{cardData.title}}</h2>
-          <span class="single-music-author">{{cardData.author}}</span>
+        <div class="single-link flex-box" @click="handleLinkTo">
+          <img :src="cardData.imgUrl" alt="single" class="single-img">
+          <div class="single-music-intro">
+            <h2 class="single-music-name">{{cardData.name}}</h2>
+            <span class="single-music-author">{{cardData.author}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -14,6 +16,7 @@
 
 <script setup>
 import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   cardData: {
@@ -21,7 +24,16 @@ const props = defineProps({
   }
 })
 
+const router = useRouter()
 
+const handleLinkTo = () => {
+  router.push({
+    path: '/playmusic',
+    query: {
+      id: props.cardData.id
+    }
+  })
+}
 </script>
 
 <style scoped>
@@ -36,6 +48,8 @@ const props = defineProps({
 }
 .music-single {
   position: relative;
+}
+.music-single .single-link {
   align-items: center;
 }
 .music-single .single-img {

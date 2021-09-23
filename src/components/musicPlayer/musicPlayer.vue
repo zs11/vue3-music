@@ -54,11 +54,15 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from "vuex"
 import request from '../../config/request'
 import BScroll from 'better-scroll'
 import MusicPlayer from "./musicLyric.vue"
 import MusicAudio from "./audio.vue"
+
+// router
+const router = useRouter()
 
 // store
 const store = useStore()
@@ -111,11 +115,12 @@ const musicLyric = computed(() => {
 
 // onMounted
 onMounted(async () => {
+  const { id } = router.currentRoute.value.query
   const res = await request({
     url: '/music/info',
     method: 'GET',
     params: {
-      id: 1
+      id
     }
   })
   const { data } = res
@@ -170,6 +175,7 @@ const scrollVal = ref(null)
 const initScroll = () => {
   scrollVal.value = new BScroll(scrollRef.value, {
     probeType: 1,
+    click: true
   })
 }
 
@@ -216,6 +222,7 @@ const handleIconClick = (event) => {
 }
 
 const handleRelationTouchStart = (event) => {
+  event.preventDefault()
   if (event.touches) {
     relationTouch.startY = event.touches[0].clientY
     relationTouch.bottom = bottomNum.value
@@ -262,6 +269,18 @@ const handleRelationTouchEnd = (event) => {
   relationTouch.upDone = false
   relationTouch.down = false
   relationTouch.downDone = false
+}
+
+const throttle = (fn, delay) => {
+  let start = 0
+  return function() {
+    const context = this, args = arguments
+    let now = Date.now()
+    if (now - start >= delay) {
+      fn.apply(context, args)
+      start = Date.now()
+    }
+  }
 }
 </script>
 

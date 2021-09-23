@@ -97,4 +97,9 @@ a {
 .gird-box {
   display: grid;
 }
+@media screen and (min-width: 1080px) {
+  html {
+    font-size: 160px;
+  }
+}
 </style>

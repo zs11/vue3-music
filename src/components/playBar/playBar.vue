@@ -25,8 +25,10 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
-import router from '../../router/index'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex';
+
+const router = useRouter()
 
 // 移动动画
 const moveAnim = ref('')
