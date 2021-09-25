@@ -23,9 +23,18 @@
           </div>
         </div>
         <div class="music-audio">
-          <music-audio :url="musicInfo.musicUrl" :progress="true" :delay="300"
+          <audio-controls
+            :useAudio="{
+              independent: false,
+              ref: audioRef
+            }"
+            :url="musicInfo.musicUrl"
+            :playStatus="playAudioStatus"
+            :progress="true"
+            :delay="300"
             @status-change="handleAudioStatusChange"
-            @progress-touch="handleAudioProgressTouch"></music-audio>
+            @progress-touch="handleAudioProgressTouch">
+            </audio-controls>
         </div>
       </div>
     </div>
@@ -59,7 +68,7 @@ import { useStore } from "vuex"
 import request from '../../config/request'
 import BScroll from 'better-scroll'
 import MusicPlayer from "./musicLyric.vue"
-import MusicAudio from "./audio.vue"
+import AudioControls from "../audio/audioControls.vue"
 
 // router
 const router = useRouter()
@@ -71,6 +80,9 @@ const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
 const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 const setMusicProgressStatus = (val) => store.commit('setMusicProgressStatus', val)
 const setMusicHistory = (val) => store.commit('setMusicHistory', val)
+const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
+const audioRef = computed(() => store.state.audioRef)
+const playAudioStatus = computed(() => store.state.playAudioStatus)
 
 // music info
 const playerRef = ref(null)
@@ -125,6 +137,11 @@ onMounted(async () => {
   })
   const { data } = res
   musicInfo.value = data
+  setMusicBasic('id', data.id)
+  setMusicBasic('name', data.name)
+  setMusicBasic('author', data.author)
+  setMusicBasic('imgUrl', data.imgUrl)
+  setMusicBasic('musicUrl', data.musicUrl)
   playerHeight.value = playerRef.value.clientHeight
   bottomNum.value = -(playerHeight.value - 120)
   nextTick(() => {
@@ -142,12 +159,7 @@ const handleFallClick = () => {
 const handleAudioStatusChange = (val) => {
   setMusicStatus(val)
   if (val === 'play') {
-    setMusicHistory({
-      id: 1,
-      name: '半糖主义',
-      author: 'S.H.E',
-      imgUrl: 'http://localhost:3020/music/music1.jpg'
-    })
+    setMusicHistory(musicInfo.value)
   }
 }
 

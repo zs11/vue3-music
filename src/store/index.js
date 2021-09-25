@@ -1,3 +1,4 @@
+import { toRef } from 'vue'
 import { createStore, createLogger } from "vuex"
 import { localStorageObj } from '../config/storage'
 
@@ -13,7 +14,19 @@ const state = () => ({
   musicPlayerStyle: '',
   musicStatus: 'pause',
   musicProgressStatus: 0,
-  musicHistory: localStorageObj.get('musicHistory', true) || []
+  musicHistory: localStorageObj.get('musicHistory', true) || [],
+  audioRef: null,
+  playAudioStatus: {
+    duration: 0,
+    current: 0
+  },
+  musicBasic: {
+    id: -1,
+    name: '',
+    author: '',
+    imgUrl: '',
+    musicUrl: ''
+  }
 })
 
 const getters = {}
@@ -51,6 +64,15 @@ const mutations = {
     histories = histories.concat(history)
     state.musicHistory = histories
     localStorageObj.set('musicHistory', histories, true)
+  },
+  setMusicBasic (state, { key, val }) {
+    state.musicBasic[key] = val
+  },
+  setAudioRef (state, ref) {
+    state.audioRef = ref
+  },
+  setPlayAudioStatus (state, { key, val }) {
+    state.playAudioStatus[key] = val
   }
 }
 

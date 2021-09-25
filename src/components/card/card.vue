@@ -1,6 +1,6 @@
 <template>
   <div class="music-card">
-    <div class="card-box">
+    <div class="card-box" @click="handleCardClick">
       <div class="music-media">
         <img :src="cardData.img" alt="media" class="media-img">
         <div class="media-play">
@@ -17,12 +17,15 @@
 
 <script setup>
 import { computed, defineProps } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   cardData: {
     required: true
   }
 })
+
+const router = useRouter()
 
 const playnum = computed(() => {
   const num = props.cardData.playnum
@@ -34,6 +37,15 @@ const playnum = computed(() => {
   }
   return `${res}万`
 })
+
+const handleCardClick = () => {
+  router.push({
+    path: '/album',
+    query: {
+      id: props.cardData.id
+    }
+  })
+}
 </script>
 
 <style scoped>

@@ -17,6 +17,7 @@
 <script setup>
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from "vuex"
 
 const props = defineProps({
   cardData: {
@@ -26,7 +27,11 @@ const props = defineProps({
 
 const router = useRouter()
 
+const store = useStore()
+const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
+
 const handleLinkTo = () => {
+  setMusicPlayerStatus(true)
   router.push({
     path: '/playmusic',
     query: {

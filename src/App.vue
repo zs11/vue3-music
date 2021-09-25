@@ -2,14 +2,25 @@
   <m-header :short-video="shortVideoStatus"></m-header>
   <router-view></router-view>
   <m-footer v-show="!shortVideoStatus"></m-footer>
-  <play-bar v-show="!shortVideoStatus" :class="playBarStyle" @animationend="handleBarAnimation"></play-bar>
+  <play-bar
+    v-show="!shortVideoStatus"
+    :class="playBarStyle"
+    @animationend="handleBarAnimation">
+  </play-bar>
+  <music-audio
+    v-show="!shortVideoStatus"
+    :url="musicUrl"
+    @canplay="handleMusicCanPlay"
+    @timeupdate="handleMusicTimeUpdate">
+  </music-audio>
 </template>
 
 <script setup>
 import MHeader from './views/header/header.vue'
 import MFooter from './views/footer/footer.vue'
 import PlayBar from './components/playBar/playBar.vue'
-import { ref, onMounted, computed } from 'vue'
+import MusicAudio from './components/audio/audio.vue'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useStore } from "vuex";
 
 // shortVideo 短视频页flag
@@ -20,6 +31,8 @@ const playBarStyle = computed(() => store.state.playBarStyle)
 const musicPlayerStyle = computed(() => store.state.musicPlayerStyle)
 const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
 const setPlayBarStyle = (val) => store.commit('setPlayBarStyle', val)
+const musicBasic = computed(() => store.state.musicBasic)
+const setPlayAudioStatus = (key, val) => store.commit('setPlayAudioStatus', { key, val })
 
 const handleBarAnimation = (event) => {
   if (event.target && event.target.className.indexOf('bar-fall') !== -1) {
@@ -41,6 +54,21 @@ onMounted(() => {
     document.documentElement.style.setProperty('--vh', `${vh}px`) 
   })
 })
+
+// music url
+const musicUrl = computed(() => musicBasic.value.musicUrl)
+
+// music evnet
+const handleMusicCanPlay = (duration) => {
+  setPlayAudioStatus('duration', duration)
+}
+
+const handleMusicTimeUpdate = ({ current, duration }) => {
+  if (!Number.isNaN(duration) && !Number.isNaN(current)) {
+    setPlayAudioStatus('current', current)
+    setPlayAudioStatus('duration', duration)
+  }
+}
 </script>
 
 <style>

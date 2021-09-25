@@ -17,8 +17,8 @@
         <div class="total-time">{{timeInfo.total}}</div>
       </div>
     </div>
-    <div class="audio-source">
-      <audio :src="url" height="0" width="0" ref="audioRef"
+    <div class="audio-source" v-if="useAudio.independent">
+      <audio :src="url" height="0" width="0" ref="compAudioRef"
         @canplay="handleCanplay"
         @timeupdate="handleTimeupdate"></audio>
     </div>
@@ -50,9 +50,23 @@
 import { computed, defineProps, onMounted, ref, defineEmits, watch, reactive } from "vue";
 
 const props = defineProps({
+  useAudio: {
+    type: Object,
+    default: {
+      independent: true,
+      ref: null
+    }
+  },
   url: {
     type: String,
     default: ''
+  },
+  playStatus: {
+    type: Object,
+    default: {
+      duration: 0,
+      current: 0
+    }
   },
   progress: {
     type: Boolean,
@@ -66,7 +80,17 @@ const props = defineProps({
 
 const emitter = defineEmits(['StatusChange', 'ProgressTouch'])
 
-const audioRef = ref(null)
+// aduio Ref 
+const compAudioRef = ref(null)
+const audioRef = computed(() => {
+  if (props.useAudio.independent) {
+    return compAudioRef.value
+  } else {
+    return props.useAudio.ref
+  }
+})
+
+
 const progressRef = ref(null)
 const audioPlayStatus = ref(false)
 const precent = ref(0)
@@ -96,6 +120,22 @@ const handleTimeupdate = (event) => {
     event.preventDefault()
   }
 }
+
+// watch
+watch(() => props.playStatus.duration, (newDuration) => {
+  timeInfo.total = formatTime(newDuration)
+})
+
+watch(() => props.playStatus.current, (newCurrent) => {
+  console.log(newCurrent);
+  if (!progress.onTouch) {
+    const current = newCurrent
+    const duration = props.playStatus.duration
+    precent.value = (current / duration).toFixed(4) * 100 + '%'
+    timeInfo.current = formatTime(current)
+  } else {
+  }
+})
 
 const play = () => {
   if (audioRef.value && !audioPlayStatus.value) {

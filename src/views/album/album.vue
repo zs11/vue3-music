@@ -27,10 +27,15 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue"
 import { useRouter } from "vue-router"
+import { useStore } from "vuex"
 import request from '../../config/request'
 
 // router
 const router = useRouter()
+
+// store
+const store = useStore()
+const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
 
 const albumData = reactive({
   info: {},
@@ -52,7 +57,7 @@ onMounted(async () => {
   }
 })
 
-const handleMusicClick = (event) => {
+const handleMusicClick = async (event) => {
   let _target = event.target
   if (_target.nodeName.toLocaleLowerCase() === 'div') {
     _target = _target.parentNode
@@ -62,12 +67,19 @@ const handleMusicClick = (event) => {
   }
   if (_target.nodeName.toLocaleLowerCase() === 'li') {
     const id = _target.dataset.id
-    router.push({
-      path: '/playmusic',
-      query: {
+    const res = await request({
+      url: '/music/info',
+      method: 'GET',
+      params: {
         id
       }
     })
+    const { data } = res
+    setMusicBasic('id', data.id)
+    setMusicBasic('name', data.name)
+    setMusicBasic('author', data.author)
+    setMusicBasic('imgUrl', data.imgUrl)
+    setMusicBasic('musicUrl', data.musicUrl)
   }
 }
 </script>
