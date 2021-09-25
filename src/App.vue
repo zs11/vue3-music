@@ -60,13 +60,14 @@ const musicUrl = computed(() => musicBasic.value.musicUrl)
 
 // music evnet
 const handleMusicCanPlay = (duration) => {
-  setPlayAudioStatus('duration', duration)
+  if (!Number.isNaN(duration)) {
+    setPlayAudioStatus('duration', duration)
+  }
 }
 
-const handleMusicTimeUpdate = ({ current, duration }) => {
-  if (!Number.isNaN(duration) && !Number.isNaN(current)) {
+const handleMusicTimeUpdate = (current) => {
+  if (!Number.isNaN(current)) {
     setPlayAudioStatus('current', current)
-    setPlayAudioStatus('duration', duration)
   }
 }
 </script>

@@ -26,7 +26,8 @@ const state = () => ({
     author: '',
     imgUrl: '',
     musicUrl: ''
-  }
+  },
+  musicChange: false,
 })
 
 const getters = {}
@@ -73,6 +74,9 @@ const mutations = {
   },
   setPlayAudioStatus (state, { key, val }) {
     state.playAudioStatus[key] = val
+  },
+  setMusicChange (state, status) {
+    state.musicChange = status
   }
 }
 

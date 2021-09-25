@@ -38,8 +38,7 @@ const handleCanplay = () => {
 const handleTimeupdate = (event) => {
   // event.preventDefault()
   const current = audioRef.value.currentTime
-  const duration = audioRef.value.duration
-  emitter('timeupdate', { current, duration })
+  emitter('timeupdate', current)
 }
 </script>
 

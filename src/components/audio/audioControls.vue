@@ -65,16 +65,13 @@ const props = defineProps({
     type: Object,
     default: {
       duration: 0,
-      current: 0
+      current: 0,
+      isPlay: false
     }
   },
   progress: {
     type: Boolean,
     default: false
-  },
-  delay: {
-    type: Number,
-    default: 0
   }
 })
 
@@ -92,7 +89,7 @@ const audioRef = computed(() => {
 
 
 const progressRef = ref(null)
-const audioPlayStatus = ref(false)
+const audioPlayStatus = ref(props.playStatus.isPlay)
 const precent = ref(0)
 const useId = computed(() => (
   audioPlayStatus.value ? '#pause-icon' : '#play-icon'
@@ -127,7 +124,6 @@ watch(() => props.playStatus.duration, (newDuration) => {
 })
 
 watch(() => props.playStatus.current, (newCurrent) => {
-  console.log(newCurrent);
   if (!progress.onTouch) {
     const current = newCurrent
     const duration = props.playStatus.duration
@@ -137,15 +133,24 @@ watch(() => props.playStatus.current, (newCurrent) => {
   }
 })
 
+// onMounted
+onMounted(() => {
+  if (props.playStatus.duration !== 0) {
+    const duration = props.playStatus.duration
+    timeInfo.total = formatTime(duration)
+    if (props.playStatus.current) {
+      const current = props.playStatus.current
+      timeInfo.current = formatTime(current)
+      precent.value = (current / duration).toFixed(4) * 100 + '%'
+    }
+  }
+})
+
 const play = () => {
   if (audioRef.value && !audioPlayStatus.value) {
     audioPlayStatus.value = true
     emitter('StatusChange', 'play')
-    if (props.delay > 0) {
-      setTimeout(playPromise, props.delay)
-    } else {
-      playPromise()
-    }
+    playPromise()
   }
 }
 

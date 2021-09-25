@@ -17,6 +17,18 @@ const props = defineProps({
   musicLyric: {
     type: Object,
     default: {}
+  },
+  musicChange: {
+    type: Object,
+    default: {
+      current: 0,
+      isChange: false,
+      isPlay: false
+    }
+  },
+  delay: {
+    type: Number,
+    default: 0
   }
 })
 
@@ -44,6 +56,12 @@ const handleLyric = ({ lineNum, txt }) => {
 
 const initLyric = () => {
   _lyric.value = new Lyric(props.musicLyric.lyric, handleLyric)
+  if (!props.musicChange.isChange && props.musicChange.current !== 0) {
+    setLyric(props.musicChange.current)
+    if (!props.musicChange.isPlay) {
+      togglePlay()
+    }
+  }
 }
 
 watch(() => props.musicLyric, (newLyric, oldLyric) => {
@@ -60,9 +78,20 @@ watch(() => props.musicLyric, (newLyric, oldLyric) => {
   }
 })
 
+// status, isSeek.value
+// CLOSE 
+// 1. pause false
+// 2. pause true
+
+// PlAY
+// 1. Play flase
+// 2. play true 不做处理
+
 watch(() => musicStatus.value, (status) => {
-  if (!isSeek.value || (status === 'pause' && isSeek.value)) {
+  if (status === 'pause') {
     togglePlay()
+  } else if (status === 'play' && !isSeek.value) {
+    setLyric(props.musicChange.current)
   }
   isSeek.value = false
 })
@@ -92,12 +121,9 @@ const stop = () => {
   _lyric.value && _lyric.value.stop()
 }
 
-const togglePlaying = () => {
-  _lyric.value && _lyric.value.togglePlay()
-}
-
 const setLyric = (curTime) => {
-  _lyric.value && _lyric.value.seek(curTime * 1000)
+  console.log(props.delay);
+  _lyric.value && _lyric.value.seek(curTime * 1000 - props.delay)
 }
 </script>
 

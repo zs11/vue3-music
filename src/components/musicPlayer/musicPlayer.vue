@@ -19,7 +19,12 @@
               <span> - </span>
               <span class="author-info">{{musicInfo.author}}</span>
             </div>
-            <music-player :musicLyric="musicLyric" @lyric-update="handleLyricUpdate"></music-player>
+            <music-player
+              :musicLyric="musicLyric"
+              :musicChange="musicChange"
+              @lyric-update="handleLyricUpdate"
+              :delay="-300">
+              </music-player>
           </div>
         </div>
         <div class="music-audio">
@@ -29,9 +34,8 @@
               ref: audioRef
             }"
             :url="musicInfo.musicUrl"
-            :playStatus="playAudioStatus"
+            :playStatus="controlStatus"
             :progress="true"
-            :delay="300"
             @status-change="handleAudioStatusChange"
             @progress-touch="handleAudioProgressTouch">
             </audio-controls>
@@ -63,7 +67,7 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted, nextTick, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useStore } from "vuex"
 import request from '../../config/request'
 import BScroll from 'better-scroll'
@@ -75,7 +79,6 @@ const router = useRouter()
 
 // store
 const store = useStore()
-const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
 const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
 const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 const setMusicProgressStatus = (val) => store.commit('setMusicProgressStatus', val)
@@ -83,6 +86,23 @@ const setMusicHistory = (val) => store.commit('setMusicHistory', val)
 const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
 const audioRef = computed(() => store.state.audioRef)
 const playAudioStatus = computed(() => store.state.playAudioStatus)
+const musicStatus = computed(() => store.state.musicStatus)
+const controlStatus = computed(() => ({
+  duration: playAudioStatus.value.duration,
+  current: playAudioStatus.value.current,
+  isPlay: musicStatus.value === 'play'
+}))
+const isChange = computed(() => store.state.musicChange)
+const musicChange = computed(() => ({
+  isChange: isChange.value,
+  current: playAudioStatus.value.current,
+  isPlay: musicStatus.value === 'play'
+}))
+const setPlayAudioStatus = (key, val) => store.commit('setPlayAudioStatus', { key, val })
+
+// onBeforeRouteLeave(() => {
+//   setPlayAudioStatus('duration', 0)
+// })
 
 // music info
 const playerRef = ref(null)

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from "vuex"
 
@@ -29,9 +29,18 @@ const router = useRouter()
 
 const store = useStore()
 const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
+const musicBasic = computed(() => store.state.musicBasic)
+const setMusicChange = (val) => store.commit('setMusicChange', val)
 
 const handleLinkTo = () => {
   setMusicPlayerStatus(true)
+  if (props.cardData.id !== musicBasic.value.id) {
+    setMusicStatus('pause')
+    setMusicChange(true)
+  } else {
+    setMusicChange(false)
+  }
   router.push({
     path: '/playmusic',
     query: {

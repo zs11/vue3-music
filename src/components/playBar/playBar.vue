@@ -13,7 +13,7 @@
             <div class="play-music txt-4" :class="moveAnim" @animationend="handleMoveAnim">{{musicNameAuthor}}</div>
           </div>
           <div class="cont-right flex-box">
-            <div class="play-btn flex-box">
+            <div class="flex-box control-btn" :class="musicStatus === 'pause' ? 'play-btn' : 'pause-btn'" @click="handleControlClick">
               <div class="play-process"></div>
             </div>
             <div class="music-history">
@@ -37,6 +37,12 @@ const store = useStore()
 const musicBasic = computed(() => store.state.musicBasic)
 const setMusicPlayerStatus = (val) => store.commit('setMusicPlayerStatus', val)
 const setPlayBarStyle = (val) => store.commit('setPlayBarStyle', val)
+const musicStatus = computed(() => store.state.musicStatus)
+const audioRef = computed(() => store.state.audioRef)
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
+const setMusicHistory = (val) => store.commit('setMusicHistory', val)
+const setMusicChange = (val) => store.commit('setMusicChange', val)
+
 
 // 移动动画
 const moveAnim = ref('')
@@ -56,7 +62,7 @@ const musicNameAuthor = computed(() => {
   if (musicBasic.value.name || musicBasic.value.author) {
     return `${musicBasic.value.name} - ${musicBasic.value.author}`
   } else {
-    return ''
+    return '聆听精彩音乐...'
   }
 })
 
@@ -74,18 +80,59 @@ watch(() => musicNameAuthor.value, (newVal) => {
 })
 
 // 播放条click处理
+
 const handlebarClick = (event) => {
   const className = event.target.className
   const id = musicBasic.value.id
-  if (className && className.indexOf('play-btn') === -1 && id !== -1) {
+  if (className && className.indexOf('control-btn') === -1 && id !== -1) {
     setMusicPlayerStatus(true)
-    router.push({path: 'playmusic', query: { id }})
+    setMusicChange(false)
+    router.push({
+      path: '/playmusic',
+      query: { id }
+    })
+  }
+}
+
+const handleControlClick = () => {
+  if (musicBasic.value.id !== -1) {
+    if (musicStatus.value === 'play') {
+      pause()
+    } else {
+      play()
+    }
   }
 }
 
 onMounted(() => {
   const historymusic = localStorage.getItem('historyMusicId')
 })
+
+const play = () => {
+  if (audioRef.value && musicStatus.value === 'pause') {
+    setMusicStatus('play')
+    setMusicHistory(musicBasic.value)
+    playPromise()
+  }
+}
+
+const playPromise = () => {
+  const _playPromise = audioRef.value.play()
+  if (_playPromise !== undefined) {
+    _playPromise.then(_ => {
+      audioRef.value.play()
+    })
+    .catch(error => {
+    })
+  }
+}
+
+const pause = () => {
+  if (audioRef.value && musicStatus.value === 'play') {
+    setMusicStatus('pause')
+    audioRef.value.pause()
+  }
+}
 </script>
 
 <style scoped>
@@ -150,7 +197,7 @@ onMounted(() => {
   font-size: .14rem;
   white-space: nowrap;
 }
-.play-bar-cont .cont-right .play-btn {
+.play-bar-cont .cont-right .control-btn {
   position: relative;
   width: .24rem;
   height: .24rem;
@@ -167,6 +214,19 @@ onMounted(() => {
   border-width: .06rem .09rem;
   border-color: transparent transparent transparent #fff;
   margin-left: .094rem;
+}
+.play-bar-cont .cont-right .pause-btn::before {
+  content: "";
+  display: block;
+  height: .1rem;
+  width: .06rem;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  border-left-width: .02rem;
+  border-right-width: .02rem;
+  border-color: #fff;
+  border-style: solid;
+  margin-left: .07rem;
 }
 .move-anim {
   animation: move 5s linear 2s forwards;

@@ -36,6 +36,7 @@ const router = useRouter()
 // store
 const store = useStore()
 const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 
 const albumData = reactive({
   info: {},
@@ -80,6 +81,7 @@ const handleMusicClick = async (event) => {
     setMusicBasic('author', data.author)
     setMusicBasic('imgUrl', data.imgUrl)
     setMusicBasic('musicUrl', data.musicUrl)
+    setMusicStatus('pause')
   }
 }
 </script>

@@ -28,6 +28,8 @@ const mapData = (data) => {
     keys.forEach(key => {
       if (typeof data[key] === 'string' && data[key].indexOf('127.0.0.1') !== -1) {
         data[key] = data[key].replace('127.0.0.1', '192.168.2.102')
+      } else if (typeof data[key] === 'object') {
+        data[key] = mapData(data[key])
       }
     })
   }
