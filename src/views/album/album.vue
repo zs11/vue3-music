@@ -26,7 +26,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue"
-import { useRouter } from "vue-router"
+import { useRouter, onBeforeRouteLeave } from "vue-router"
 import { useStore } from "vuex"
 import request from '../../config/request'
 
@@ -37,6 +37,14 @@ const router = useRouter()
 const store = useStore()
 const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
 const setMusicStatus = (val) => store.commit('setMusicStatus', val)
+const setAlbumStatus = (val) => store.commit('setAlbumStatus', val)
+
+// 进入和离开album页面
+setAlbumStatus(true)
+
+onBeforeRouteLeave(() => {
+  setAlbumStatus(false)
+})
 
 const albumData = reactive({
   info: {},

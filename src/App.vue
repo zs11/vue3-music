@@ -1,18 +1,15 @@
 <template>
-  <m-header :short-video="shortVideoStatus"></m-header>
+  <m-header :short-video="shortVideoStatus" v-show="!albumStatus"></m-header>
   <router-view></router-view>
   <m-footer v-show="!shortVideoStatus"></m-footer>
-  <play-bar
-    v-show="!shortVideoStatus"
-    :class="playBarStyle"
-    @animationend="handleBarAnimation">
-  </play-bar>
+  <play-bar v-show="!shortVideoStatus"></play-bar>
   <music-audio
     v-show="!shortVideoStatus"
     :url="musicUrl"
     @canplay="handleMusicCanPlay"
     @timeupdate="handleMusicTimeUpdate">
   </music-audio>
+  <music-history v-if="musicHistoryStatus"></music-history>
 </template>
 
 <script setup>
@@ -20,12 +17,14 @@ import MHeader from './views/header/header.vue'
 import MFooter from './views/footer/footer.vue'
 import PlayBar from './components/playBar/playBar.vue'
 import MusicAudio from './components/audio/audio.vue'
+import MusicHistory from './components/playBar/history.vue'
 import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useStore } from "vuex";
 
 // shortVideo 短视频页flag
 const store = useStore()
 const shortVideoStatus = computed(() => store.state.shortVideoStatus)
+const albumStatus = computed(() => store.state.albumStatus)
 const musicPlayerStatus = computed(() => store.state.musicPlayerStatus)
 const playBarStyle = computed(() => store.state.playBarStyle)
 const musicPlayerStyle = computed(() => store.state.musicPlayerStyle)
@@ -33,6 +32,7 @@ const setMusicPlayerStyle = (val) => store.commit('setMusicPlayerStyle', val)
 const setPlayBarStyle = (val) => store.commit('setPlayBarStyle', val)
 const musicBasic = computed(() => store.state.musicBasic)
 const setPlayAudioStatus = (key, val) => store.commit('setPlayAudioStatus', { key, val })
+const musicHistoryStatus = computed(() => store.state.musicHistoryStatus)
 
 const handleBarAnimation = (event) => {
   if (event.target && event.target.className.indexOf('bar-fall') !== -1) {

@@ -15,6 +15,7 @@ const state = () => ({
   musicStatus: 'pause',
   musicProgressStatus: 0,
   musicHistory: localStorageObj.get('musicHistory', true) || [],
+  musicHistoryStatus: false,
   audioRef: null,
   playAudioStatus: {
     duration: 0,
@@ -28,6 +29,7 @@ const state = () => ({
     musicUrl: ''
   },
   musicChange: false,
+  albumStatus: false
 })
 
 const getters = {}
@@ -66,6 +68,19 @@ const mutations = {
     state.musicHistory = histories
     localStorageObj.set('musicHistory', histories, true)
   },
+  deleteMusicHistory (state, { type, idx }) {
+    if (type === 'deleteAll') {
+      state.musicHistory = []
+      localStorageObj.set('musicHistory', [], true)
+    } else if (type === 'deleteOne') {
+      const newHistory = state.musicHistory.slice(0, idx).concat(state.musicHistory.slice(idx+1))
+      state.musicHistory = newHistory
+      localStorageObj.set('musicHistory', newHistory, true)
+    }
+  },
+  setMusicHistoryStatus (state, status) {
+    state.musicHistoryStatus = status
+  },
   setMusicBasic (state, { key, val }) {
     state.musicBasic[key] = val
   },
@@ -77,6 +92,9 @@ const mutations = {
   },
   setMusicChange (state, status) {
     state.musicChange = status
+  },
+  setAlbumStatus (state, status) {
+    state.albumStatus = status
   }
 }
 

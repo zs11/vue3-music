@@ -1,9 +1,10 @@
 <template>
-  <section class="music-play-bar">
-    <div class="play-bar-box"  @click.prevent="handlebarClick">
+  <section class="music-play-bar" :class="barStyle" @animationend="handleBarAnimationEnd">
+    <div class="play-bar-box" @click="handlebarClick">
       <div class="flotation-bar">
         <div class="play-bar-music">
           <img :src="musicBasic.imgUrl" alt="music" class="play-img" v-if="musicBasic.imgUrl">
+          <img src="../../assets/img/music-unplay.png" alt="music" class="unplay-img" v-else>
         </div>
         <div class="play-bar-cont flex-box">
           <div class="cont-left">
@@ -13,10 +14,10 @@
             <div class="play-music txt-4" :class="moveAnim" @animationend="handleMoveAnim">{{musicNameAuthor}}</div>
           </div>
           <div class="cont-right flex-box">
-            <div class="flex-box control-btn" :class="musicStatus === 'pause' ? 'play-btn' : 'pause-btn'" @click="handleControlClick">
+            <div class="flex-box control-btn" :class="musicStatus === 'pause' ? 'play-btn' : 'pause-btn'" @click.stop="handleControlClick">
               <div class="play-process"></div>
             </div>
-            <div class="music-history">
+            <div class="music-history" @click.stop="handleHistoryClick">
               <svg t="1632543111484" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="28980"><path d="M838.99432863 162.40722482l-186.33127437 38.02037807c-13.51137403 2.82796201-23.25213204 14.61113702-23.25213205 28.43672906v412.09690783c0 23.09502305-15.86800901 43.20497508-38.49170507 48.54668107L534.04575904 702.86218588c-34.24976206 8.01255901-61.27251012 37.39194207-61.42961915 72.58435814-0.31421799 48.07535409 44.30473808 83.58198817 90.96611119 72.74146715l29.85071007-6.91279599c48.70379009-11.31184801 83.26777017-53.73127811 85.62440516-103.22061322h0.47132701v-372.34833075c0-10.84052103 7.69834101-20.26706103 18.38175304-22.46658704l150.35331329-30.63625506c10.84052103-2.19952601 18.69597103-11.78317502 18.69597104-22.93791404v-104.47748521c0.15710901-14.76824603-13.35426503-25.76587604-27.96540206-22.78080504zM166.72491631 255.88708001h375.96183773v33.14999904H166.72491631zM166.72491631 387.38731327h375.96183773v33.14999905H166.72491631z" p-id="28981"></path><path d="M166.72491631 518.88754654h375.96183773V552.03754558H166.72491631zM166.72491631 650.3877798h202.98482839v33.14999904H166.72491631z" p-id="28982"></path></svg>
             </div>
           </div>
@@ -42,11 +43,14 @@ const audioRef = computed(() => store.state.audioRef)
 const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 const setMusicHistory = (val) => store.commit('setMusicHistory', val)
 const setMusicChange = (val) => store.commit('setMusicChange', val)
+const setMusicHistoryStatus = (val) => store.commit('setMusicHistoryStatus', val)
+const musicHistoryStatus = computed(() => store.state.musicHistoryStatus)
 
 
 // 移动动画
 const moveAnim = ref('')
 const timer = ref(null)
+const barStyle = ref('')
 
 const handleMoveAnim = () => {
   if (moveAnim.value === 'move-anim') {
@@ -80,11 +84,9 @@ watch(() => musicNameAuthor.value, (newVal) => {
 })
 
 // 播放条click处理
-
 const handlebarClick = (event) => {
-  const className = event.target.className
   const id = musicBasic.value.id
-  if (className && className.indexOf('control-btn') === -1 && id !== -1) {
+  if (id !== -1) {
     setMusicPlayerStatus(true)
     setMusicChange(false)
     router.push({
@@ -103,6 +105,22 @@ const handleControlClick = () => {
     }
   }
 }
+
+const handleHistoryClick = () => {
+  barStyle.value = 'bar-fall'
+}
+
+const handleBarAnimationEnd = () => {
+  if (barStyle.value === 'bar-fall') {
+    setMusicHistoryStatus(true)
+  }
+}
+
+watch(() => musicHistoryStatus.value, (newStatus) => {
+  if (!newStatus) {
+    barStyle.value = 'bar-rise'
+  }
+})
 
 onMounted(() => {
   const historymusic = localStorage.getItem('historyMusicId')
@@ -158,7 +176,7 @@ const pause = () => {
   height: .48rem;
   z-index: 2;
 }
-.play-bar-music .play-img {
+.play-bar-music .play-img, .play-bar-music .unplay-img {
   display: block;
   width: 100%;
   height: 100%;
