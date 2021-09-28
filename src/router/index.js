@@ -5,6 +5,7 @@ import TopList from '../views/topList/topList.vue'
 import VideoStream from '../views/shortVideo/videoStream.vue'
 import MusicPlayer from '../components/musicPlayer/musicPlayer.vue'
 import Album from '../views/album/album.vue'
+import SingerDetail from '../views/singer/singerDetail.vue'
 
 const routes = [
   {
@@ -34,6 +35,10 @@ const routes = [
   {
     path: '/album',
     component: Album
+  },
+  {
+    path: '/singer-detail',
+    component: SingerDetail
   }
 ]
 

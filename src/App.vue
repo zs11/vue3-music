@@ -1,5 +1,5 @@
 <template>
-  <m-header :short-video="shortVideoStatus" v-show="!albumStatus"></m-header>
+  <m-header :short-video="shortVideoStatus" v-show="headerStatus"></m-header>
   <router-view></router-view>
   <m-footer v-show="!shortVideoStatus"></m-footer>
   <play-bar v-show="!shortVideoStatus"></play-bar>
@@ -24,7 +24,7 @@ import { useStore } from "vuex";
 // shortVideo 短视频页flag
 const store = useStore()
 const shortVideoStatus = computed(() => store.state.shortVideoStatus)
-const albumStatus = computed(() => store.state.albumStatus)
+const headerStatus = computed(() => store.state.headerStatus)
 const musicPlayerStatus = computed(() => store.state.musicPlayerStatus)
 const playBarStyle = computed(() => store.state.playBarStyle)
 const musicPlayerStyle = computed(() => store.state.musicPlayerStyle)
@@ -119,6 +119,9 @@ a {
 }
 .txt-4 {
   color: rgba(255, 255, 255, 1);
+}
+.txt-5 {
+  color: rgba(0, 0, 0, 1);
 }
 .flex-box {
   display: flex;

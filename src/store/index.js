@@ -29,7 +29,7 @@ const state = () => ({
     musicUrl: ''
   },
   musicChange: false,
-  albumStatus: false
+  headerStatus: true
 })
 
 const getters = {}
@@ -93,8 +93,8 @@ const mutations = {
   setMusicChange (state, status) {
     state.musicChange = status
   },
-  setAlbumStatus (state, status) {
-    state.albumStatus = status
+  setHeaderStatus (state, status) {
+    state.headerStatus = status
   }
 }
 

@@ -37,13 +37,13 @@ const router = useRouter()
 const store = useStore()
 const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
 const setMusicStatus = (val) => store.commit('setMusicStatus', val)
-const setAlbumStatus = (val) => store.commit('setAlbumStatus', val)
+const setHeaderStatus = (val) => store.commit('setHeaderStatus', val)
 
 // 进入和离开album页面
-setAlbumStatus(true)
+setHeaderStatus(false)
 
 onBeforeRouteLeave(() => {
-  setAlbumStatus(false)
+  setHeaderStatus(true)
 })
 
 const albumData = reactive({
