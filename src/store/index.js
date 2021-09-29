@@ -26,7 +26,8 @@ const state = () => ({
     name: '',
     author: '',
     imgUrl: '',
-    musicUrl: ''
+    musicUrl: '',
+    delay: 0
   },
   musicChange: false,
   headerStatus: true

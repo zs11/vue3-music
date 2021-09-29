@@ -19,8 +19,8 @@
   </div>
   <div class="singer-detail-content">
     <div class="music-content" v-if="activeTab === 'music'">
-      <ul class="music-list">
-        <li v-for="music in singer.singer_musics" :key="music.id" class="music-item flex-box">
+      <ul class="music-list" @click.stop="handleMusicClick">
+        <li v-for="music in singer.singer_musics" :key="music.id" class="music-item flex-box" :data-id="music.id">
           <div class="music-detail">
             <h3 class="music-name txt-5">{{music.name}}</h3>
             <div class="music-desc">
@@ -65,6 +65,8 @@ const router = useRouter()
 
 const store = useStore()
 const setHeaderStatus = (val) => store.commit('setHeaderStatus', val)
+const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
+const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 
 setHeaderStatus(false)
 onBeforeRouteLeave(() => {
@@ -98,6 +100,34 @@ onMounted(async () => {
 
 const handleTabClick = (tab) => {
   activeTab.value = tab
+}
+
+const handleMusicClick = async (event) => {
+  let _target = event.target
+  if (_target.nodeName.toLocaleLowerCase() === 'ul') {
+    return
+  }
+  while(_target.nodeName.toLocaleLowerCase() !== 'li') {
+    _target = _target.parentNode
+  }
+  const { id } = _target.dataset
+  if (id) {
+    const res = await request({
+      url: '/music/info',
+      method: 'GET',
+      params: {
+        id
+      }
+    })
+    const { data } = res
+    setMusicBasic('id', data.id)
+    setMusicBasic('name', data.name)
+    setMusicBasic('author', data.author)
+    setMusicBasic('imgUrl', data.imgUrl)
+    setMusicBasic('musicUrl', data.musicUrl)
+    setMusicBasic('delay', data.delay)
+    setMusicStatus('pause')
+  }
 }
 </script>
 

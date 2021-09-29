@@ -122,7 +122,6 @@ const stop = () => {
 }
 
 const setLyric = (curTime) => {
-  console.log(props.delay);
   _lyric.value && _lyric.value.seek(curTime * 1000 - props.delay)
 }
 </script>

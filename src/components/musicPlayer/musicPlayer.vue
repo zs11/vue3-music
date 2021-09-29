@@ -23,7 +23,7 @@
               :musicLyric="musicLyric"
               :musicChange="musicChange"
               @lyric-update="handleLyricUpdate"
-              :delay="-300">
+              :delay="delay">
               </music-player>
           </div>
         </div>
@@ -84,6 +84,7 @@ const setMusicStatus = (val) => store.commit('setMusicStatus', val)
 const setMusicProgressStatus = (val) => store.commit('setMusicProgressStatus', val)
 const setMusicHistory = (val) => store.commit('setMusicHistory', val)
 const setMusicBasic = (key, val) => store.commit('setMusicBasic', { key, val })
+const musicBasic = computed(() => store.state.musicBasic)
 const audioRef = computed(() => store.state.audioRef)
 const playAudioStatus = computed(() => store.state.playAudioStatus)
 const musicStatus = computed(() => store.state.musicStatus)
@@ -109,6 +110,9 @@ const playerRef = ref(null)
 const playerHeight = ref(0)
 const musicInfo = ref({})
 const bottomNum = ref(0)
+const delay = computed(() => {
+  return (-300 - musicBasic.value.delay)
+})
 const transitionVal = ref('all .3s ease-in 0s')
 const bgStyle = computed(() => {
   const imgUrl  = musicInfo.value.imgUrl
@@ -162,6 +166,7 @@ onMounted(async () => {
   setMusicBasic('author', data.author)
   setMusicBasic('imgUrl', data.imgUrl)
   setMusicBasic('musicUrl', data.musicUrl)
+  setMusicBasic('delay', data.delay)
   playerHeight.value = playerRef.value.clientHeight
   bottomNum.value = -(playerHeight.value - 120)
   nextTick(() => {

@@ -12,7 +12,7 @@
       </div>
     </div>
     <main class="ablum-musics">
-      <ul class="music-list" @click="handleMusicClick">
+      <ul class="music-list" @click.stop="handleMusicClick">
         <li class="music-list-item" v-for="(music, index) in albumData.musics" :key="music.id" :data-id="music.id">
           <div class="music-item-content">
             <div class="music-name">{{music.name}}</div>
@@ -89,6 +89,7 @@ const handleMusicClick = async (event) => {
     setMusicBasic('author', data.author)
     setMusicBasic('imgUrl', data.imgUrl)
     setMusicBasic('musicUrl', data.musicUrl)
+    setMusicBasic('delay', data.delay)
     setMusicStatus('pause')
   }
 }
